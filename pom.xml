@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Class: D:/broderick/develop/vaadin/vaadin-14-flow/pom.xml
-  ~ Modify date: 2020/3/20 下午1:13
-  ~ Copyright (c) 2008 - 2020. - Broderick Labs.
+  -->
+
+<!--
   -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
@@ -32,9 +32,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:CNBroderick/asset.git</connection>
-        <developerConnection>scm:git:git@github.com:CNBroderick/asset.git</developerConnection>
-        <url>git@github.com:CNBroderick/asset.git</url>
+        <connection>scm:git:git@github.com:CNBroderick/vaadin-14-flow.git</connection>
+        <developerConnection>scm:git:git@github.com:CNBroderick/vaadin-14-flow.git</developerConnection>
+        <url>git@github.com:CNBroderick/vaadin-14-flow.git</url>
     </scm>
 
     <prerequisites>
