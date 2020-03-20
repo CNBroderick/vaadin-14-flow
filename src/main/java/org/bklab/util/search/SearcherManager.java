@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.util.search.SearcherManager
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-20 14:16:17
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.util.search.SearcherManager
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -40,7 +45,7 @@ public class SearcherManager<T> {
                 String name = object.getString("name");
                 //noinspection unchecked
                 map.put(name, new Searcher<>(name, object.getString("description", ""),
-                        (IKeywordSearcher<T>) Class.forName(object.getString("class")).newInstance())
+                        (IKeywordSearcher<T>) Class.forName(object.getString("class")).getDeclaredConstructor().newInstance())
                 );
             } catch (Exception e) {
                 e.printStackTrace();

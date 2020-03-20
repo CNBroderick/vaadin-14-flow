@@ -1,12 +1,18 @@
 /*
- * Class: org.bklab.flow.factory.TextAreaFactory
- * Modify date: 2020/3/20 上午10:14
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-20 15:06:34
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.factory.TextAreaFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
 package org.bklab.flow.factory;
 
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextAreaVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
 
 public class TextAreaFactory extends FlowFactory<TextArea, TextAreaFactory> {
@@ -94,4 +100,23 @@ public class TextAreaFactory extends FlowFactory<TextArea, TextAreaFactory> {
         return this;
     }
 
+    public TextAreaFactory lumoSmall() {
+        component.addThemeVariants(TextAreaVariant.LUMO_SMALL);
+        return this;
+    }
+
+    public TextAreaFactory lumoAlignCenter() {
+        component.addThemeVariants(TextAreaVariant.LUMO_ALIGN_CENTER);
+        return this;
+    }
+
+    public TextAreaFactory lumoAlignRight() {
+        component.addThemeVariants(TextAreaVariant.LUMO_ALIGN_RIGHT);
+        return this;
+    }
+
+    public TextAreaFactory materialAlwaysFloatLabel() {
+        component.addThemeVariants(TextAreaVariant.MATERIAL_ALWAYS_FLOAT_LABEL);
+        return this;
+    }
 }
