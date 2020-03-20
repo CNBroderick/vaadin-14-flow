@@ -2,10 +2,10 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-20 13:31:13
+ * Modify date：2020-03-20 13:34:38
  * _____________________________
  * Project name: vaadin-14-flow
- * Class name：CrudGridView
+ * Class name：org.bklab.flow.CrudGridView
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -70,6 +70,9 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
             .setClearButtonVisible(true).keyUpEnterListener(e -> doLocalQuery()).lumoSmall().width("15em").get();
     private final Button search = new ButtonFactory().text("查询").icon(VaadinIcon.SEARCH.create())
             .minWidth100px().clickListener(e -> doQuery()).lumoSmall().get();
+
+    private Supplier<Class<? extends IGridMenuManager>> gridMenuManagerSupplier = () -> null;
+
     private ValueProvider<T, Collection<T>> subEntitiesProvider = null;
 
 
@@ -266,6 +269,10 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         setContent(layout);
     }
 
+    public CrudGridView<T> buildMenuFromManager() {
+        return buildMenuFromManager(gridMenuManagerSupplier.get());
+    }
+
     public CrudGridView<T> buildMenuFromManager(Class<? extends IGridMenuManager> manager) {
         return buildMenu(GridMenuBuilder.createContextMenuManager(this, manager));
     }
@@ -421,5 +428,10 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
 
     public List<T> getEntities() {
         return entities;
+    }
+
+    public CrudGridView<T> setGridMenuManagerSupplier(Supplier<Class<? extends IGridMenuManager>> gridMenuManagerSupplier) {
+        this.gridMenuManagerSupplier = gridMenuManagerSupplier;
+        return this;
     }
 }
