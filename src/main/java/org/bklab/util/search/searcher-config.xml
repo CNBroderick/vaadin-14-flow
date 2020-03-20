@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Class: D:/broderick/develop/vaadin/vaadin-14-flow/src/main/java/org/bklab/util/search/searcher-config.xml
+  ~ Modify date: 2020/2/14 下午3:13
+  ~ Copyright (c) 2008 - 2020. - Broderick Labs.
+  -->
+
+<keyword-sercher-config>
+    <!--
+        字符	转义字符	描述
+        &	&amp;	和
+        <	&lt;	小于号
+        >	&gt;	大于号
+        "	&quot;	双引号
+        '	&apos;	单引号
+    -->
+
+    <searches entity="building.entity.Room">
+        <search name="按房间号" class="building.util.search.room.SearchRoomByNo"/>
+        <search name="按楼层" class="building.util.search.room.SearchRoomByFloor"/>
+        <search name="按状态" class="building.util.search.room.SearchRoomByStatus"/>
+        <search name="按面积" description="按范围：0,10 超过：>0 或 0, 小于：&lt;99 或 ,99"
+                class="building.util.search.room.SearchRoomByArea"/>
+        <search name="按类型" class="building.util.search.room.SearchRoomByType"/>
+        <search name="按描述" class="building.util.search.room.SearchRoomByDescription"/>
+    </searches>
+</keyword-sercher-config>
