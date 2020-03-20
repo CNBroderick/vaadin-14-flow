@@ -3,12 +3,11 @@
   ~ Copyright (c) 2008 - 2020. - Broderick Labs.
   ~ Author: Broderick Johansson
   ~ E-mail: z@bkLab.org
-  ~ Modify date：2020-03-20 13:27
+  ~ Modify date：2020-03-20 13:31:13
   ~ _____________________________
   ~ Project name: vaadin-14-flow
-  ~ class name：pom.xml
+  ~ Class name：pom.xml
   ~ Copyright (c) 2008 - 2020. - Broderick Labs.
-  ~
   -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
