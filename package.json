@@ -5,7 +5,10 @@
     "@polymer/polymer": "3.2.0",
     "@webcomponents/webcomponentsjs": "^2.2.10",
     "@vaadin/flow-deps": "./target/frontend",
-    "minimist": ">=1.2.2"
+    "minimist": ">=1.2.2",
+    "chart.js": "^2.9.3",
+    "moment": "^2.24.0",
+    "@polymer/paper-slider": "^3.0.1"
   },
   "devDependencies": {
     "webpack": "4.30.0",
