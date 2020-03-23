@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-20 13:34:38
+ * Modify date：2020-03-21 09:50:17
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -56,10 +56,10 @@ import java.util.stream.Stream;
 @SuppressWarnings("UnusedReturnValue")
 public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
 
-    private final HorizontalPageBar<T> pageBar;
     private final List<Consumer<List<T>>> reloadedListeners = new ArrayList<>();
     private final Map<String, Predicate<T>> afterQueryPredicates = new HashMap<>();
     private final Map<String, Supplier<Object>> parameterMap = new HashMap<>();
+    private final HorizontalPageBar<T> pageBar = new HorizontalPageBar<>(pagingList);
     private AbstractOperation queryOperation;
     private int singlePageSize = 20;
     private final PagingList<T> pagingList = new PagingList<>(singlePageSize);
@@ -78,7 +78,7 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
 
     {
         addToolBarRight(keyword, search);
-        pageBar = new HorizontalPageBar<>(pagingList);
+//        pageBar = new HorizontalPageBar<>(pagingList);
     }
 
     public CrudGridView() {

@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.factory.ButtonFactory
- * Modify date: 2020/3/20 上午10:14
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-20 15:19:03
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.factory.ButtonFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -11,6 +16,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.dom.Style;
 
@@ -28,6 +34,11 @@ public class ButtonFactory extends FlowFactory<Button, ButtonFactory> {
 
     public ButtonFactory icon(Component icon) {
         component.setIcon(icon);
+        return this;
+    }
+
+    public ButtonFactory icon(IconFactory icon) {
+        component.setIcon(icon.create());
         return this;
     }
 
