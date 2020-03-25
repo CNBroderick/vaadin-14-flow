@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.service.Service
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-23 16:58:30
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.service.Service
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -87,7 +92,7 @@ public class Service<T extends Service<T>> {
     }
 
     protected AbstractOperation insertParams(HasAbstractOperation hasAbstractOperation, Map<String, Object> params) {
-        AbstractOperation operation = hasAbstractOperation.getAbstractOperation();
+        AbstractOperation operation = hasAbstractOperation.createAbstractOperation();
         operation.setParam("opr", currentUserSupplier.get());
         if (params != null) params.forEach(operation::setParam);
         return operation;

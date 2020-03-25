@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-20 13:37:26
+ * Modify date：2020-03-25 18:40:59
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.TmbView
@@ -17,7 +17,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.bklab.flow.component.HorizontalRule;
 
-@SuppressWarnings("unchecked")
 public class TmbView<T extends TmbView<T>> extends VerticalLayout {
 
     private final HorizontalRule topHr = new HorizontalRule();

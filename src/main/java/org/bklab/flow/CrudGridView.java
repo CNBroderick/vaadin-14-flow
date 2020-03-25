@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 13:56:20
+ * Modify date：2020-03-24 13:40:25
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -35,6 +35,7 @@ import com.vaadin.flow.function.ValueProvider;
 import dataq.core.jdbc.DBAccess;
 import dataq.core.operation.AbstractOperation;
 import dataq.core.operation.JdbcQueryOperation;
+import org.bklab.element.HasAbstractOperation;
 import org.bklab.flow.component.HorizontalPageBar;
 import org.bklab.flow.component.HorizontalRule;
 import org.bklab.flow.dialog.ExceptionDialog;
@@ -71,6 +72,8 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     private final Button search = new ButtonFactory().text("查询").icon(VaadinIcon.SEARCH.create())
             .minWidth100px().clickListener(e -> doQuery()).lumoSmall().get();
 
+    private final List<BiConsumer<CrudGridView<T>, List<T>>> afterQueryConsumers = new ArrayList<>();
+
     private Supplier<Class<? extends IGridMenuManager>> gridMenuManagerSupplier = () -> null;
 
     private ValueProvider<T, Collection<T>> subEntitiesProvider = null;
@@ -105,6 +108,11 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
 
     public CrudGridView<T> setQueryOperation(AbstractOperation operation) {
         this.queryOperation = operation;
+        return this;
+    }
+
+    public CrudGridView<T> setQueryOperation(HasAbstractOperation operation) {
+        this.queryOperation = operation.createAbstractOperation();
         return this;
     }
 
@@ -192,6 +200,7 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         this.pagingList.update(entities, singlePageSize);
         this.pageBar.setOnePageSize(singlePageSize).setTotalDataSizeFormatter(totalDataSizeFormatter).build();
         this.reloadedListeners.forEach(a -> a.accept(entities));
+        this.afterQueryConsumers.forEach(a -> a.accept(this, entities));
     }
 
     private void setGridItems(List<T> entities) {
@@ -432,6 +441,11 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
 
     public CrudGridView<T> setGridMenuManagerSupplier(Supplier<Class<? extends IGridMenuManager>> gridMenuManagerSupplier) {
         this.gridMenuManagerSupplier = gridMenuManagerSupplier;
+        return this;
+    }
+
+    public CrudGridView<T> addAfterQueryConsumer(BiConsumer<CrudGridView<T>, List<T>> afterQueryConsumer) {
+        afterQueryConsumers.add(afterQueryConsumer);
         return this;
     }
 }

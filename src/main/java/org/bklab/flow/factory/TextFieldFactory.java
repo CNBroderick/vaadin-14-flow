@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.factory.TextFieldFactory
- * Modify date: 2020/3/20 上午10:14
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-24 14:45:30
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.factory.TextFieldFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -97,7 +102,7 @@ public class TextFieldFactory extends FlowFactory<TextField, TextFieldFactory> {
     }
 
     public TextFieldFactory value(String value) {
-        component.setValue(value);
+        if (value != null) component.setValue(value);
         return this;
     }
 

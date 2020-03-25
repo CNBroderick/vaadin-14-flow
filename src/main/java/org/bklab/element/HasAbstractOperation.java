@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.element.HasAbstractOperation
- * Modify date: 2020/3/20 上午11:18
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-23 16:58:30
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.element.HasAbstractOperation
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -10,5 +15,5 @@ import dataq.core.operation.AbstractOperation;
 
 public interface HasAbstractOperation {
 
-    AbstractOperation getAbstractOperation();
+    AbstractOperation createAbstractOperation();
 }

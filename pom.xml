@@ -3,7 +3,7 @@
   ~ Copyright (c) 2008 - 2020. - Broderick Labs.
   ~ Author: Broderick Johansson
   ~ E-mail: z@bkLab.org
-  ~ Modify date：2020-03-23 13:50:27
+  ~ Modify date：2020-03-25 15:13:39
   ~ _____________________________
   ~ Project name: vaadin-14-flow
   ~ Class name：D:/broderick/develop/vaadin/vaadin-14-flow/pom.xml
@@ -92,6 +92,25 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+
         <dependency>
             <groupId>be.ceau</groupId>
             <artifactId>chart</artifactId>
@@ -225,6 +244,13 @@
         <resources>
             <resource>
                 <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources/</directory>
                 <includes>
                     <include>**/*.*</include>
                 </includes>
