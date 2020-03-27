@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 13:38:44
+ * Modify date：2020-03-27 09:46:21
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.VerticalLayoutFactory
@@ -15,15 +15,13 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.bklab.flow.factory.base.ClickNotifierFactory;
-import org.bklab.flow.factory.base.FlexComponentFactory;
-import org.bklab.flow.factory.base.HasComponentFactory;
-import org.bklab.flow.factory.base.HasStyleFactory;
+import org.bklab.flow.factory.base.*;
 
 public class VerticalLayoutFactory extends FlowFactory<VerticalLayout, VerticalLayoutFactory> implements
         FlexComponentFactory<VerticalLayoutFactory, VerticalLayout>,
         HasComponentFactory<VerticalLayoutFactory, VerticalLayout>,
         HasStyleFactory<VerticalLayoutFactory, VerticalLayout>,
+        ThemableLayoutFactory<VerticalLayoutFactory, VerticalLayout>,
         ClickNotifierFactory<VerticalLayoutFactory, VerticalLayout> {
 
     public VerticalLayoutFactory() {
@@ -32,6 +30,16 @@ public class VerticalLayoutFactory extends FlowFactory<VerticalLayout, VerticalL
 
     public VerticalLayoutFactory(VerticalLayout component) {
         super(component);
+    }
+
+    public VerticalLayoutFactory(Component... components) {
+        super(new VerticalLayout(components));
+    }
+
+    public VerticalLayoutFactory compress() {
+        component.setPadding(false);
+        component.setMargin(false);
+        return this;
     }
 
     public VerticalLayoutFactory spacing(boolean spacing) {

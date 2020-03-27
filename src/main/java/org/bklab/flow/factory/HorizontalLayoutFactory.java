@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 13:29:15
+ * Modify date：2020-03-27 09:46:01
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.HorizontalLayoutFactory
@@ -18,10 +18,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import org.bklab.flow.factory.base.ClickNotifierFactory;
 import org.bklab.flow.factory.base.FlexComponentFactory;
 import org.bklab.flow.factory.base.HasComponentFactory;
+import org.bklab.flow.factory.base.ThemableLayoutFactory;
 
 public class HorizontalLayoutFactory extends FlowFactory<HorizontalLayout, HorizontalLayoutFactory> implements
         FlexComponentFactory<HorizontalLayoutFactory, HorizontalLayout>,
         HasComponentFactory<HorizontalLayoutFactory, HorizontalLayout>,
+        ThemableLayoutFactory<HorizontalLayoutFactory, HorizontalLayout>,
         ClickNotifierFactory<HorizontalLayoutFactory, HorizontalLayout> {
 
     public HorizontalLayoutFactory() {
@@ -30,6 +32,16 @@ public class HorizontalLayoutFactory extends FlowFactory<HorizontalLayout, Horiz
 
     public HorizontalLayoutFactory(HorizontalLayout component) {
         super(component);
+    }
+
+    public HorizontalLayoutFactory(Component... components) {
+        super(new HorizontalLayout(components));
+    }
+
+    public HorizontalLayoutFactory compress() {
+        component.setPadding(false);
+        component.setMargin(false);
+        return this;
     }
 
     public HorizontalLayoutFactory spacing(boolean spacing) {

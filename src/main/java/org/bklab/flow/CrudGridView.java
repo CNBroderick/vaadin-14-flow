@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-24 13:40:25
+ * Modify date：2020-03-26 15:30:08
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -195,7 +195,13 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         return this;
     }
 
-    private void doRefreshAfterFinishedQuery() {
+    public CrudGridView<T> resetEntities(Collection<T> entities) {
+        this.entities.clear();
+        this.entities.addAll(entities);
+        return this;
+    }
+
+    public void doRefreshAfterFinishedQuery() {
         setGridItems(entities);
         this.pagingList.update(entities, singlePageSize);
         this.pageBar.setOnePageSize(singlePageSize).setTotalDataSizeFormatter(totalDataSizeFormatter).build();
