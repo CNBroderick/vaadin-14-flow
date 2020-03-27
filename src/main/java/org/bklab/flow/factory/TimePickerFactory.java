@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.factory.TimePickerFactory
- * Modify date: 2020/3/20 上午10:14
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-27 12:27:40
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.factory.TimePickerFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -11,6 +16,7 @@ import com.vaadin.flow.component.timepicker.GeneratedVaadinTimePicker;
 import com.vaadin.flow.component.timepicker.TimePicker;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Locale;
 
@@ -32,6 +38,11 @@ public class TimePickerFactory extends FlowFactory<TimePicker, TimePickerFactory
 
     public TimePickerFactory value(LocalTime value) {
         component.setValue(value);
+        return this;
+    }
+
+    public TimePickerFactory value(LocalDateTime value) {
+        if (value != null && value.toLocalTime() != null) component.setValue(value.toLocalTime());
         return this;
     }
 

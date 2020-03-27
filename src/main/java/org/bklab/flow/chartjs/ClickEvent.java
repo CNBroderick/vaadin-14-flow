@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 13:58:14
+ * Modify date：2020-03-27 13:40:59
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.chartjs.ClickEvent
@@ -30,7 +30,7 @@ public class ClickEvent extends ComponentEvent<ChartJs> {
         this.datasetLabel = datasetLabel;
     }
 
-    /**
+    /*
      * Corresponds to value on x axis of vertical chart.
      *
      * @return
@@ -39,7 +39,7 @@ public class ClickEvent extends ComponentEvent<ChartJs> {
         return label;
     }
 
-    /**
+    /*
      * Corresponds to value on y axis of vertical chart.
      *
      * @return
@@ -48,7 +48,7 @@ public class ClickEvent extends ComponentEvent<ChartJs> {
         return value;
     }
 
-    /**
+    /*
      * Label the dataset, it;s value corresponds to values in the legend.
      *
      * @return

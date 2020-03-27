@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-25 15:10:19
+ * Modify date：2020-03-27 10:47:02
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.common.data.CsvRecordDataFunction
@@ -72,7 +72,7 @@ public class CsvRecordDataFunction implements IRecordDataFunction<CsvRecordDataF
         CSVParser parse = CSVParser.parse(bufferedReader, format);
         Schema schema = new Schema();
         for (String k : header) {
-            schema.addField(new SchemaFieldFactory(k).get());
+            schema.addField(new SchemaFieldFactory(k.strip()).get());
         }
 
         List<Record> records = parse.getRecords().stream().map(csvRecord -> {

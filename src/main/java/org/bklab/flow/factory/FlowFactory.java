@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 13:38:44
+ * Modify date：2020-03-27 15:13:40
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.FlowFactory
@@ -83,6 +83,21 @@ public class FlowFactory<T extends Component, E extends FlowFactory<T, E>> imple
 
     public E sizeUndefined() {
         access(HasSize.class).setSizeUndefined();
+        return (E) this;
+    }
+
+    public E id(String id) {
+        get().setId(id);
+        return (E) this;
+    }
+
+    public E visible(boolean visible) {
+        get().setVisible(visible);
+        return (E) this;
+    }
+
+    public E enabledStateChanged(boolean enabled) {
+        get().onEnabledStateChanged(enabled);
         return (E) this;
     }
 

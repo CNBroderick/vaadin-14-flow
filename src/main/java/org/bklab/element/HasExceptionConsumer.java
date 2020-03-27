@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-25 18:41:12
+ * Modify date：2020-03-27 13:40:59
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.element.HasExceptionConsumer
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 public interface HasExceptionConsumer<T extends HasExceptionConsumer<T>> {
 
-    /**
+    /*
      * please add flow code to your extends class:
      * private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
      * <p>

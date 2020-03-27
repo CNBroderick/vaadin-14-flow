@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.util.BuildingDailyRollingFileAppender
- * Modify date: 2020/3/20 上午10:25
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-27 13:40:59
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.util.BuildingDailyRollingFileAppender
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -73,14 +78,14 @@ public class BuildingDailyRollingFileAppender extends FileAppender {
     private long nextCheck = System.currentTimeMillis() - 1;
     private SimpleDateFormat sdf;
 
-    /**
+    /*
      * The default constructor does nothing.
      */
     public BuildingDailyRollingFileAppender() {
         System.setProperty("DATAQ_HOME", System.getenv("DATAQ_HOME"));
     }
 
-    /**
+    /*
      * Instantiate a <code>DailyRollingFileAppender</code> and open the file designated by
      * <code>filename</code>. The opened filename will become the output destination for
      * this appender.
@@ -92,7 +97,7 @@ public class BuildingDailyRollingFileAppender extends FileAppender {
     }
 
     /**
-     * Returns the value of the <b>DatePattern</b> option.
+     * @return Returns the value of the <b>DatePattern</b> option.
      */
     public String getDatePattern() {
         return datePattern;

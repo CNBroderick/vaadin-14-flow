@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-26 15:30:08
+ * Modify date：2020-03-27 10:02:07
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -202,7 +202,6 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     }
 
     public void doRefreshAfterFinishedQuery() {
-        setGridItems(entities);
         this.pagingList.update(entities, singlePageSize);
         this.pageBar.setOnePageSize(singlePageSize).setTotalDataSizeFormatter(totalDataSizeFormatter).build();
         this.reloadedListeners.forEach(a -> a.accept(entities));
@@ -257,9 +256,9 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         if (exception instanceof java.net.ConnectException) {
             new ExceptionDialog(exception).setTitle("网络连接异常").open();
         }
-//        if (exception instanceof com.mysql.cj.jdbc.exceptions.CommunicationsException) {
-//            new ExceptionDialog(exception).setTitle("网络连接异常").open();
-//        }
+        if (exception instanceof com.mysql.cj.jdbc.exceptions.CommunicationsException) {
+            new ExceptionDialog(exception).setTitle("数据库连接异常").open();
+        }
 
         VerticalLayout layout = new VerticalLayout();
         layout.getStyle().set("color", "red");

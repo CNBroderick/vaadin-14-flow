@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-25 18:41:12
+ * Modify date：2020-03-27 10:46:00
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.common.data.ExcelRecordDataFunction
@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -125,7 +126,7 @@ public class ExcelRecordDataFunction implements IRecordDataFunction<ExcelRecordD
                 value = cell.getStringCellValue();
             }
         }
-        return value;
+        return Optional.ofNullable(value).map(String::strip).orElse(value);
     }
 
     private Workbook createWorkbook(Path path) throws Exception {

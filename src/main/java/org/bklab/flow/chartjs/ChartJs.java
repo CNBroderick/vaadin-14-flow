@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 13:45:48
+ * Modify date：2020-03-27 13:40:59
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.chartjs.ChartJs
@@ -44,7 +44,7 @@ public class ChartJs extends PolymerTemplate<ChartJsModel> {
         getModel().setChartJs(chartJson);
     }
 
-    /**
+    /*
      * Enables to add a listener on frontend click event.
      * This is invoked only when a dataset is clicked.
      *
@@ -63,7 +63,7 @@ public class ChartJs extends PolymerTemplate<ChartJsModel> {
         getModel().setChartJs(chart);
     }
 
-    /**
+    /*
      * Enables to update datasets.
      *
      * @param data
@@ -72,7 +72,7 @@ public class ChartJs extends PolymerTemplate<ChartJsModel> {
         getModel().setChartData(data);
     }
 
-    /**
+    /*
      * Enables to update chart options.
      *
      * @param options

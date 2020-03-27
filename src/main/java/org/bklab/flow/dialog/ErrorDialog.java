@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.dialog.ErrorDialog
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-27 15:39:37
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.dialog.ErrorDialog
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -16,7 +21,7 @@ import org.bklab.image.ImageBase;
 
 public class ErrorDialog extends ConfirmedDialog {
 
-    private final String message;
+    private String message;
     private String title;
     private Throwable throwable;
     private boolean hasCreate = false;
@@ -40,6 +45,7 @@ public class ErrorDialog extends ConfirmedDialog {
 
     public ErrorDialog throwable(Throwable throwable) {
         this.throwable = throwable;
+        if (message == null || message.isBlank()) message = throwable.getLocalizedMessage();
         return this;
     }
 
@@ -51,7 +57,7 @@ public class ErrorDialog extends ConfirmedDialog {
     public ErrorDialog create() {
         Image image = ImageBase.getImage("error.svg");
         TextArea area = new TextAreaFactory().value((message == null || message.isBlank())
-                ? "出现位置错误" : message).readOnly().maxWidth("40vw").widthFull().get();
+                ? "出现未知错误" : message).readOnly().maxWidth("40vw").widthFull().get();
 
         HorizontalLayout layout = new HorizontalLayout(image, area);
         layout.expand(area);

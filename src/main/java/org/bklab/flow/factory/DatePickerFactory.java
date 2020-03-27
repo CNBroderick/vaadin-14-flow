@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.factory.DatePickerFactory
- * Modify date: 2020/3/20 上午10:14
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-27 12:27:40
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.factory.DatePickerFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -11,6 +16,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datepicker.GeneratedVaadinDatePicker;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -22,6 +28,16 @@ public class DatePickerFactory extends FlowFactory<DatePicker, DatePickerFactory
 
     public DatePickerFactory() {
         this(new DatePicker(null, Locale.SIMPLIFIED_CHINESE));
+    }
+
+    public DatePickerFactory value(LocalDate value) {
+        if (value != null) this.component.setValue(value);
+        return this;
+    }
+
+    public DatePickerFactory value(LocalDateTime value) {
+        if (value != null && value.toLocalDate() != null) this.component.setValue(value.toLocalDate());
+        return this;
     }
 
     public DatePickerFactory min(LocalDate min) {
