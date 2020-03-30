@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-20 15:19:03
+ * Modify date：2020-03-30 09:36:21
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.ButtonFactory
@@ -89,6 +89,16 @@ public class ButtonFactory extends FlowFactory<Button, ButtonFactory> {
 
     public ButtonFactory text(String text) {
         component.setText(text);
+        return this;
+    }
+
+    public ButtonFactory disableOnClick() {
+        component.setDisableOnClick(true);
+        return this;
+    }
+
+    public ButtonFactory disableOnClick(boolean disableOnClick) {
+        component.setDisableOnClick(disableOnClick);
         return this;
     }
 

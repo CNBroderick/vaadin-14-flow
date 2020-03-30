@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 10:02:07
+ * Modify date：2020-03-30 13:20:12
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -32,6 +32,7 @@ import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.provider.hierarchy.TreeData;
 import com.vaadin.flow.data.provider.hierarchy.TreeDataProvider;
 import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.server.VaadinSession;
 import dataq.core.jdbc.DBAccess;
 import dataq.core.operation.AbstractOperation;
 import dataq.core.operation.JdbcQueryOperation;
@@ -44,6 +45,7 @@ import org.bklab.flow.factory.ComboBoxFactory;
 import org.bklab.flow.factory.TextFieldFactory;
 import org.bklab.flow.menu.GridMenuBuilder;
 import org.bklab.flow.menu.IGridMenuManager;
+import org.bklab.flow.tools.MobileBrowserPredicate;
 import org.bklab.util.PagingList;
 import org.bklab.util.search.common.KeyWordSearcher;
 
@@ -71,6 +73,7 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
             .setClearButtonVisible(true).keyUpEnterListener(e -> doLocalQuery()).lumoSmall().width("15em").get();
     private final Button search = new ButtonFactory().text("查询").icon(VaadinIcon.SEARCH.create())
             .minWidth100px().clickListener(e -> doQuery()).lumoSmall().get();
+    private Boolean mobileMode = false;
 
     private final List<BiConsumer<CrudGridView<T>, List<T>>> afterQueryConsumers = new ArrayList<>();
 
@@ -198,6 +201,11 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     public CrudGridView<T> resetEntities(Collection<T> entities) {
         this.entities.clear();
         this.entities.addAll(entities);
+        return this;
+    }
+
+    public CrudGridView<T> minimalPageBar() {
+        this.pageBar.minimal();
         return this;
     }
 
@@ -452,5 +460,23 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     public CrudGridView<T> addAfterQueryConsumer(BiConsumer<CrudGridView<T>, List<T>> afterQueryConsumer) {
         afterQueryConsumers.add(afterQueryConsumer);
         return this;
+    }
+
+    public CrudGridView<T> mobileMode() {
+        this.mobileMode = true;
+        minimalPageBar();
+        new TextFieldFactory(keyword).placeholder("关键字").width("6em").maxWidth("40vw");
+        search.setWidth("4em");
+        return this;
+    }
+
+    public CrudGridView<T> mobileMode(boolean mobileMode) {
+        this.mobileMode = mobileMode;
+        if (mobileMode) mobileMode();
+        return this;
+    }
+
+    public CrudGridView<T> autoAdaptMobileMode() {
+        return mobileMode(new MobileBrowserPredicate().test(VaadinSession.getCurrent()));
     }
 }

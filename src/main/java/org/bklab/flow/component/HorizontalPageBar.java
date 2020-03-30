@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.component.HorizontalPageBar
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-30 10:39:52
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.component.HorizontalPageBar
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -18,6 +23,7 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
+import org.bklab.flow.factory.ButtonFactory;
 import org.bklab.util.DigitalFormatter;
 import org.bklab.util.PagingList;
 
@@ -42,6 +48,7 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
     private int onePageSize = 15;
     private final Select<Integer> onePageSizeBox = createOnePageSizeBox();
     private Function<Integer, String> totalDataSizeFormatter = i -> "共" + i + "条数据";
+    private Boolean minimal = Boolean.FALSE;
 
     public HorizontalPageBar(PagingList<T> pagingList) {
         this.pagingList = pagingList;
@@ -85,15 +92,31 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
 
         H6 onePageSizeBoxPrefix = new H6("每页");
         H6 onePageSizeBoxSuffix = new H6("条数据");
-        HorizontalLayout right = new HorizontalLayout(onePageSizeBoxPrefix, onePageSizeBox, onePageSizeBoxSuffix);
+        HorizontalLayout right = new HorizontalLayout();
         right.setMinWidth("200px");
         right.setDefaultVerticalComponentAlignment(Alignment.AUTO);
 
         totalText.getStyle().set("line-height", "0.5em");
         totalPageNumber.getStyle().set("line-height", "0.5em");
-        HorizontalLayout left = new HorizontalLayout(totalText, firstButton, beforeButton, current, totalPageNumber, nextButton, lastButton);
+        HorizontalLayout left = new HorizontalLayout();
         left.setMinWidth("425px");
         left.setDefaultVerticalComponentAlignment(Alignment.AUTO);
+
+        if (minimal) {
+            left.add(totalText);
+            right.add(beforeButton, current, nextButton);
+            left.setWidthFull();
+            setAlignSelf(Alignment.CENTER, left);
+            left.setMinWidth("0em");
+            left.setMaxWidth("20vw");
+            current.setMinWidth("2em");
+            current.setSuffixComponent(new ButtonFactory().text("/" + new DigitalFormatter(pagingList.length()))
+                    .enabled(false).disableOnClick().lumoTertiary().lumoSmall().get());
+            current.setWidth((String.valueOf(pagingList.length()).length() + 1) + "em");
+        } else {
+            left.add(totalText, firstButton, beforeButton, current, totalPageNumber, nextButton, lastButton);
+            right.add(onePageSizeBoxPrefix, onePageSizeBox, onePageSizeBoxSuffix);
+        }
 
         add(left);
         addAndExpand(middle);
@@ -102,7 +125,6 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
         setAlignSelf(Alignment.START, left);
         setAlignSelf(Alignment.CENTER, middle);
         setAlignSelf(Alignment.END, right);
-
         return this;
     }
 
@@ -122,6 +144,10 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
             beforeButton.setDisableOnClick(!beforeButton.isEnabled());
             nextButton.setDisableOnClick(!nextButton.isEnabled());
             lastButton.setDisableOnClick(!lastButton.isEnabled());
+
+            if (minimal) {
+                current.setMinWidth((i + 1 + "/" + new DigitalFormatter(pagingList.length())).length() + "em");
+            }
         };
 
         registrations.add(current.addValueChangeListener(e -> pageChangingListener.accept(e.getValue().intValue())));
@@ -132,6 +158,11 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
             T t = pagingList.apply(e.getOldValue()).stream().findFirst().orElse(null);
             pagingList.setSinglePageSize(e.getValue());
             totalPageNumber.setText("共 " + new DigitalFormatter(pagingList.length()) + " 页");
+            if (minimal) {
+                current.setSuffixComponent(new ButtonFactory().text("/" + new DigitalFormatter(pagingList.length()))
+                        .enabled(false).disableOnClick().lumoTertiary().lumoSmall().get());
+                current.setWidth((String.valueOf(pagingList.length()).length() + 1) + "em");
+            }
             Integer currentPage = t != null ? pagingList.inPage(t) : 1;
             current.setValue(currentPage.doubleValue());
             List<T> list = pagingList.apply(currentPage);
@@ -180,5 +211,10 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
         );
         box.setMaxWidth("75px");
         return box;
+    }
+
+    public HorizontalPageBar<T> minimal() {
+        this.minimal = true;
+        return this;
     }
 }
