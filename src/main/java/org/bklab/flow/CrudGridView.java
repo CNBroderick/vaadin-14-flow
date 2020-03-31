@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-31 11:55:45
+ * Modify date：2020-03-31 12:47:50
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -537,6 +537,11 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         if (colspan < 1) colspan = 1;
         conditionColspanMap.put(parameterName, colspan);
         if (labelName != null) conditionLabelMap.put(parameterName, labelName);
+        return this;
+    }
+
+    public CrudGridView<T> addCondition(Consumer<CrudGridView<T>> crudGridViewConsumer) {
+        crudGridViewConsumer.accept(this);
         return this;
     }
 
