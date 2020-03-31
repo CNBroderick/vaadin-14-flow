@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.factory.SelectFactory
- * Modify date: 2020/3/20 上午10:14
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-31 10:20:05
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.factory.SelectFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -27,6 +32,12 @@ public class SelectFactory<T> extends FlowFactory<Select<T>, SelectFactory<T>> {
 
     public SelectFactory<T> items(Collection<T> collection) {
         component.setItems(collection);
+        return this;
+    }
+
+    @SafeVarargs
+    public final SelectFactory<T> items(T... collections) {
+        component.setItems(collections);
         return this;
     }
 
@@ -61,7 +72,7 @@ public class SelectFactory<T> extends FlowFactory<Select<T>, SelectFactory<T>> {
     }
 
     public SelectFactory<T> itemLabelGenerator(ItemLabelGenerator<T> itemLabelGenerator) {
-        component.setItemLabelGenerator(itemLabelGenerator);
+        component.setItemLabelGenerator(t -> t == null ? component.getEmptySelectionCaption() : itemLabelGenerator.apply(t));
         return this;
     }
 
@@ -142,6 +153,11 @@ public class SelectFactory<T> extends FlowFactory<Select<T>, SelectFactory<T>> {
 
     public SelectFactory<T> removeAll() {
         component.removeAll();
+        return this;
+    }
+
+    public SelectFactory<T> lumoSmall() {
+        component.getElement().setProperty("theme", "small").setAttribute("theme", "small");
         return this;
     }
 }

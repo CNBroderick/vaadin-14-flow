@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 12:27:40
+ * Modify date：2020-03-30 15:01:07
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.TimePickerFactory
@@ -103,6 +103,11 @@ public class TimePickerFactory extends FlowFactory<TimePicker, TimePickerFactory
 
     public TimePickerFactory invalidChangeListener(ComponentEventListener<GeneratedVaadinTimePicker.InvalidChangeEvent<TimePicker>> listener) {
         component.addInvalidChangeListener(listener);
+        return this;
+    }
+
+    public TimePickerFactory lumoSmall() {
+        this.component.getElement().setAttribute("theme", "small");
         return this;
     }
 

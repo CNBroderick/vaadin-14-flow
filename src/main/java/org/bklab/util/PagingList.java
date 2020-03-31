@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.util.PagingList
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-30 15:44:05
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.util.PagingList
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -69,6 +74,11 @@ public class PagingList<T> implements Function<Integer, List<T>> {
     public int inPage(T t) {
         int n = instance.indexOf(t);
         return n < 0 ? n : n / singlePageSize + 1;
+    }
+
+    public int indexOfPage(T t) {
+        int n = instance.indexOf(t);
+        return n < 0 ? n : n % singlePageSize;
     }
 
     public int length() {

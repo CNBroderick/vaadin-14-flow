@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-30 13:20:12
+ * Modify date：2020-03-31 11:55:45
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -14,8 +14,10 @@ package org.bklab.flow;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -40,9 +42,7 @@ import org.bklab.element.HasAbstractOperation;
 import org.bklab.flow.component.HorizontalPageBar;
 import org.bklab.flow.component.HorizontalRule;
 import org.bklab.flow.dialog.ExceptionDialog;
-import org.bklab.flow.factory.ButtonFactory;
-import org.bklab.flow.factory.ComboBoxFactory;
-import org.bklab.flow.factory.TextFieldFactory;
+import org.bklab.flow.factory.*;
 import org.bklab.flow.menu.GridMenuBuilder;
 import org.bklab.flow.menu.IGridMenuManager;
 import org.bklab.flow.tools.MobileBrowserPredicate;
@@ -80,6 +80,18 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     private Supplier<Class<? extends IGridMenuManager>> gridMenuManagerSupplier = () -> null;
 
     private ValueProvider<T, Collection<T>> subEntitiesProvider = null;
+    private final VerticalLayout conditionLayout = new VerticalLayoutFactory().widthFull().visible(false).get();
+    private final Map<String, Component> conditionComponentMap = new LinkedHashMap<>();
+    private final Button conditionButton = new ButtonFactory().icon(VaadinIcon.ANGLE_DOUBLE_DOWN)
+            .peek(b -> b.getElement().setAttribute("title", "展开搜索条件"))
+            .clickListener(e -> {
+                conditionLayout.setVisible(!conditionLayout.isVisible());
+                e.getSource().setIcon(conditionLayout.isVisible() ? VaadinIcon.ANGLE_DOUBLE_UP.create() : VaadinIcon.ANGLE_DOUBLE_DOWN.create());
+                e.getSource().getElement().setAttribute("title", (conditionLayout.isVisible() ? "展开" : "合起") + "搜索条件");
+            }).lumoIcon().lumoSmall().get();
+    private final Map<String, Integer> conditionColspanMap = new HashMap<>();
+    private final Map<String, String> conditionLabelMap = new HashMap<>();
+    private BiPredicate<T, T> defaultSameEntityBiPredicate = Objects::equals;
 
 
     {
@@ -357,7 +369,7 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     public CrudGridView<T> setGrid(Grid<T> grid) {
         grid.setSizeFull();
         this.grid = grid;
-        setContent(grid);
+        setContent(conditionLayout, grid);
         getFooterBarMiddle().removeAll();
         doRefreshAfterFinishedQuery();
         addFooterBarMiddle(pageBar.addDataConsumer(this::setGridItems).build());
@@ -479,4 +491,93 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     public CrudGridView<T> autoAdaptMobileMode() {
         return mobileMode(new MobileBrowserPredicate().test(VaadinSession.getCurrent()));
     }
+
+    public CrudGridView<T> defaultSameEntityBiPredicate(BiPredicate<T, T> defaultSameEntityBiPredicate) {
+        this.defaultSameEntityBiPredicate = defaultSameEntityBiPredicate;
+        return this;
+    }
+
+    public CrudGridView<T> scrollToEntity(T entity) {
+        return scrollToEntity(entity, defaultSameEntityBiPredicate);
+    }
+
+    public CrudGridView<T> scrollToEntity(T object, BiPredicate<T, T> defaultSameEntityBiPredicate) {
+        T entity = entities.stream().filter(t -> defaultSameEntityBiPredicate.test(object, t)).findFirst().orElse(null);
+        if (entity != null) {
+            pageBar.switchPage(entity);
+            int index = pagingList.indexOfPage(entity);
+            if (index >= 0) grid.scrollToIndex(index);
+        }
+        return this;
+    }
+
+    public <E extends Component & HasValue<?, ?>> CrudGridView<T> addCondition(String conditionName, E component) {
+        return addCondition(conditionName, component, component::getValue, 1);
+    }
+
+    public <E extends Component & HasValue<?, ?>> CrudGridView<T> addCondition(String conditionName, E component, int colspan) {
+        return addCondition(conditionName, component, component::getValue, colspan);
+    }
+
+    public CrudGridView<T> addCondition(String conditionName, Component component, Supplier<Object> valueSupplier) {
+        return addCondition(conditionName, component, valueSupplier, 1);
+    }
+
+    public CrudGridView<T> addCondition(String conditionName, Component component, Supplier<Object> valueSupplier, int colspan) {
+        return addCondition(null, conditionName, component, valueSupplier, colspan);
+    }
+
+    public CrudGridView<T> addCondition(String labelName, String parameterName, Component component, Supplier<Object> valueSupplier, int colspan) {
+        if (component == null) {
+            conditionComponentMap.remove(parameterName);
+            return this;
+        }
+        conditionComponentMap.put(parameterName, component);
+        parameterMap.put(parameterName, valueSupplier);
+        if (colspan < 1) colspan = 1;
+        conditionColspanMap.put(parameterName, colspan);
+        if (labelName != null) conditionLabelMap.put(parameterName, labelName);
+        return this;
+    }
+
+    public CrudGridView<T> buildConditionLayout() {
+        if (conditionComponentMap.isEmpty()) {
+            conditionLayout.setVisible(false);
+            conditionButton.setVisible(false);
+            return this;
+        }
+        conditionButton.setVisible(true);
+        conditionLayout.removeAll();
+        addToolBarRight(conditionButton);
+        FormLayout formLayout = new FormLayout();
+        conditionComponentMap.forEach((name, component) -> {
+            if (conditionLabelMap.containsKey(name)) {
+                formLayout.addFormItem(component, conditionLabelMap.get(name));
+                formLayout.setColspan(component, conditionColspanMap.getOrDefault(name, 1));
+            } else {
+                formLayout.add(component, conditionColspanMap.getOrDefault(name, 1));
+            }
+
+        });
+        formLayout.add(new TextFieldFactory().valueChangeListener(e -> this.keyword.setValue(e.getValue()))
+                .label("关键字：").widthFull().lumoSmall().get());
+        formLayout.setWidthFull();
+        conditionLayout.add(formLayout);
+
+        Button search = new ButtonFactory().clickListener(e -> {
+            doQuery();
+            conditionButton.click();
+        }).icon(VaadinIcon.SEARCH).text("查询").minWidth("6em").maxWidth("30vw").get();
+        Button close = new ButtonFactory().clickListener(e -> conditionButton.click()).icon(VaadinIcon.CLOSE).text("关闭").minWidth("6em").maxWidth("30vw").get();
+        conditionLayout.add(new HorizontalLayoutFactory().add(search, close).get());
+        conditionLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        return this;
+    }
+
+    public CrudGridView<T> setConditionLayout(Component... components) {
+        conditionLayout.removeAll();
+        conditionLayout.add(components);
+        return this;
+    }
+
 }

@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.factory.ComboBoxFactory
- * Modify date: 2020/3/20 上午10:14
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-03-31 09:26:18
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.factory.ComboBoxFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -41,6 +46,12 @@ public class ComboBoxFactory<T> extends FlowFactory<ComboBox<T>, ComboBoxFactory
 
     public ComboBoxFactory<T> items(Collection<T> items) {
         component.setItems(items);
+        return this;
+    }
+
+    public ComboBoxFactory<T> itemsAndFirstValue(Collection<T> items) {
+        component.setItems(items);
+        items.stream().findFirst().ifPresent(component::setValue);
         return this;
     }
 

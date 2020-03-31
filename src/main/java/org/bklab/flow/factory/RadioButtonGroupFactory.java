@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-30 13:18:43
+ * Modify date：2020-03-30 13:28:58
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.RadioButtonGroupFactory
@@ -11,7 +11,9 @@
 
 package org.bklab.flow.factory;
 
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -84,6 +86,11 @@ public class RadioButtonGroupFactory<T>
 
     public RadioButtonGroupFactory<T> value(T value) {
         component.setValue(value);
+        return this;
+    }
+
+    public RadioButtonGroupFactory<T> valueChangeListener(HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<RadioButtonGroup<T>, T>> listener) {
+        component.addValueChangeListener(listener);
         return this;
     }
 
