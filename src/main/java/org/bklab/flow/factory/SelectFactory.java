@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-31 10:20:05
+ * Modify date：2020-03-31 17:22:18
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.SelectFactory
@@ -11,7 +11,9 @@
 
 package org.bklab.flow.factory;
 
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -19,6 +21,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.function.SerializablePredicate;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public class SelectFactory<T> extends FlowFactory<Select<T>, SelectFactory<T>> {
 
@@ -38,6 +41,19 @@ public class SelectFactory<T> extends FlowFactory<Select<T>, SelectFactory<T>> {
     @SafeVarargs
     public final SelectFactory<T> items(T... collections) {
         component.setItems(collections);
+        return this;
+    }
+
+    public SelectFactory<T> autoSelectItems(Collection<T> collection) {
+        component.setItems(collection);
+        collection.stream().findFirst().ifPresent(component::setValue);
+        return this;
+    }
+
+    @SafeVarargs
+    public final SelectFactory<T> autoSelectItems(T... collections) {
+        component.setItems(collections);
+        Stream.of(collections).findFirst().ifPresent(component::setValue);
         return this;
     }
 
@@ -143,6 +159,11 @@ public class SelectFactory<T> extends FlowFactory<Select<T>, SelectFactory<T>> {
 
     public SelectFactory<T> addToPrefix(Component... components) {
         component.addToPrefix(components);
+        return this;
+    }
+
+    public SelectFactory<T> valueChangeListener(HasValue.ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<Select<T>, T>> listener) {
+        component.addValueChangeListener(listener);
         return this;
     }
 

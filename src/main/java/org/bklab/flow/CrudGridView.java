@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-31 12:47:50
+ * Modify date：2020-03-31 20:27:45
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -47,6 +47,7 @@ import org.bklab.flow.menu.GridMenuBuilder;
 import org.bklab.flow.menu.IGridMenuManager;
 import org.bklab.flow.tools.MobileBrowserPredicate;
 import org.bklab.util.PagingList;
+import org.bklab.util.UrlParameterParser;
 import org.bklab.util.search.common.KeyWordSearcher;
 
 import java.io.PrintWriter;
@@ -508,6 +509,16 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
             int index = pagingList.indexOfPage(entity);
             if (index >= 0) grid.scrollToIndex(index);
         }
+        return this;
+    }
+
+    public CrudGridView<T> scrollToEntityFromUrlParameter(String parameter, String paramName, Function<String, T> stringToEntityFunction) {
+        Optional.ofNullable(new UrlParameterParser(parameter).getValue(paramName)).map(stringToEntityFunction).ifPresent(entity -> scrollToEntity(entity, defaultSameEntityBiPredicate));
+        return this;
+    }
+
+    public CrudGridView<T> scrollToEntityFromUrlParameter(String parameter, String paramName, Function<String, T> stringToEntityFunction, BiPredicate<T, T> sameEntityBiPredicate) {
+        Optional.ofNullable(new UrlParameterParser(parameter).getValue(paramName)).map(stringToEntityFunction).ifPresent(entity -> scrollToEntity(entity, sameEntityBiPredicate));
         return this;
     }
 
