@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-31 20:27:45
+ * Modify date：2020-04-01 15:45:14
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -11,10 +11,7 @@
 
 package org.bklab.flow;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -93,6 +90,8 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     private final Map<String, Integer> conditionColspanMap = new HashMap<>();
     private final Map<String, String> conditionLabelMap = new HashMap<>();
     private BiPredicate<T, T> defaultSameEntityBiPredicate = Objects::equals;
+    private final Map<String, Predicate<T>> columnFilterPredicateMap = new HashMap<>();
+    private final Map<String, ComboBox<T>> columnFilterComponentMap = new HashMap<>();
 
 
     {
@@ -154,16 +153,16 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         return this;
     }
 
-    public void doLocalQuery() {
-        doLocalQuery(new ArrayList<>());
+    public List<T> doLocalQuery() {
+        return doLocalQuery(new ArrayList<>());
     }
 
     @SafeVarargs
-    public final void doLocalQuery(Predicate<T>... predicates) {
-        doLocalQuery(Arrays.asList(predicates));
+    public final List<T> doLocalQuery(Predicate<T>... predicates) {
+        return doLocalQuery(Arrays.asList(predicates));
     }
 
-    public void doLocalQuery(List<Predicate<T>> predicates) {
+    public List<T> doLocalQuery(List<Predicate<T>> predicates) {
         String key = keyword.getValue();
         Stream<T> stream = entities.stream();
         if (!key.isBlank()) {
@@ -174,12 +173,16 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
             stream = entities.stream().filter(e -> predicates.stream().allMatch(p -> p.test(e)));
         }
 
+        if (!columnFilterPredicateMap.isEmpty()) {
+            stream = entities.stream().filter(e -> columnFilterPredicateMap.values().stream().allMatch(p -> p.test(e)));
+        }
         List<T> collect = stream.collect(Collectors.toList());
-
         pagingList.update(collect);
         grid.setItems(collect);
         pagingList.update(collect, singlePageSize);
         pageBar.setOnePageSize(singlePageSize).setTotalDataSizeFormatter(totalDataSizeFormatter).build();
+        afterQueryConsumers.forEach(c -> c.accept(this, collect));
+        return collect;
     }
 
     public CrudGridView<T> doQuery() {
@@ -223,6 +226,10 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     }
 
     public void doRefreshAfterFinishedQuery() {
+        doRefreshAfterFinishedQuery(entities);
+    }
+
+    public void doRefreshAfterFinishedQuery(List<T> entities) {
         this.pagingList.update(entities, singlePageSize);
         this.pageBar.setOnePageSize(singlePageSize).setTotalDataSizeFormatter(totalDataSizeFormatter).build();
         this.reloadedListeners.forEach(a -> a.accept(entities));
@@ -593,6 +600,43 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     public CrudGridView<T> setConditionLayout(Component... components) {
         conditionLayout.removeAll();
         conditionLayout.add(components);
+        return this;
+    }
+
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, Function<T, String> valueProvider) {
+        return addColumnFilter(columnKey, columnName, valueProvider, (s, t) -> s == null
+                || valueProvider.apply(s).equals(valueProvider.apply(t)));
+    }
+
+
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, Function<T, String> valueProvider, BiPredicate<T, T> predicate) {
+        Grid.Column<T> column = grid.getColumnByKey(columnKey);
+        if (column == null) return this;
+        ComboBox<T> comboBox = new ComboBoxFactory<T>().lumoSmall().widthFull().placeholder("商品名称")
+                .itemLabelGenerator(valueProvider::apply)
+                .allowCustomValue(true).clearButtonVisible(true).valueChangeListener(e -> {
+                    List<T> list = doLocalQuery();
+                    for (ComboBox<T> c : columnFilterComponentMap.values()) {
+                        if (c != e.getSource()) {
+                            ItemLabelGenerator<T> generator = c.getItemLabelGenerator();
+                            c.setItems(list.stream().collect(Collectors.toMap(generator, Function.identity())).values());
+                        }
+                    }
+                }).get();
+        reloadedListeners.add(objects ->
+                comboBox.setItems(objects.stream().collect(Collectors.toMap(valueProvider, Function.identity())).values())
+        );
+        column.setHeader(comboBox);
+        columnFilterPredicateMap.put(columnKey, t -> comboBox.getValue() == null || predicate.test(comboBox.getValue(), t));
+        columnFilterComponentMap.put(columnKey, comboBox);
+        return this;
+    }
+
+    public CrudGridView<T> removeColumnFilter(String columnKey, String columnName) {
+        columnFilterPredicateMap.remove(columnKey);
+        Grid.Column<T> column = grid.getColumnByKey(columnKey);
+        if (column == null) return this;
+        column.setHeader(columnName);
         return this;
     }
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-25 18:40:59
+ * Modify date：2020-04-01 11:58:29
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.TmbView
@@ -13,6 +13,8 @@ package org.bklab.flow;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.bklab.flow.component.HorizontalRule;
@@ -99,6 +101,22 @@ public class TmbView<T extends TmbView<T>> extends VerticalLayout {
         H3 h3 = new H3(text);
         h3.getStyle().set("margin-top", "0px");
         title.add(h3);
+        return (T) this;
+    }
+
+    public T h4title(String text) {
+        title.removeAll();
+        H4 h4 = new H4(text);
+        h4.getStyle().set("margin-top", "0px");
+        title.add(h4);
+        return (T) this;
+    }
+
+    public T h5title(String text) {
+        title.removeAll();
+        H5 h5 = new H5(text);
+        h5.getStyle().set("margin-top", "0px");
+        title.add(h5);
         return (T) this;
     }
 
