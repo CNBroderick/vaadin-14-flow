@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-01 15:45:14
+ * Modify date：2020-04-01 16:50:54
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -615,16 +615,22 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         ComboBox<T> comboBox = new ComboBoxFactory<T>().lumoSmall().widthFull().placeholder("商品名称")
                 .itemLabelGenerator(valueProvider::apply)
                 .allowCustomValue(true).clearButtonVisible(true).valueChangeListener(e -> {
-                    List<T> list = doLocalQuery();
-                    for (ComboBox<T> c : columnFilterComponentMap.values()) {
-                        if (c != e.getSource()) {
+                    if (e.isFromClient()) {
+                        List<T> list = doLocalQuery();
+                        for (ComboBox<T> c : columnFilterComponentMap.values()) {
+                            if (c == e.getSource()) continue;
                             ItemLabelGenerator<T> generator = c.getItemLabelGenerator();
-                            c.setItems(list.stream().collect(Collectors.toMap(generator, Function.identity())).values());
+                            T value = c.getValue();
+                            c.setItems(list.stream().collect(Collectors.toMap(generator, Function.identity(), (a, b) -> b)).values());
+                            c.setValue(value);
+                        }
+                        if (e.getValue() == null) {
+                            e.getSource().setItems(list.stream().collect(Collectors.toMap(valueProvider, Function.identity(), (a, b) -> b)).values());
                         }
                     }
                 }).get();
         reloadedListeners.add(objects ->
-                comboBox.setItems(objects.stream().collect(Collectors.toMap(valueProvider, Function.identity())).values())
+                comboBox.setItems(objects.stream().collect(Collectors.toMap(valueProvider, Function.identity(), (a, b) -> b)).values())
         );
         column.setHeader(comboBox);
         columnFilterPredicateMap.put(columnKey, t -> comboBox.getValue() == null || predicate.test(comboBox.getValue(), t));
