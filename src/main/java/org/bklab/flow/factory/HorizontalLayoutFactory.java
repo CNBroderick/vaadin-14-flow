@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 09:46:01
+ * Modify date：2020-04-02 09:50:36
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.HorizontalLayoutFactory
@@ -41,6 +41,27 @@ public class HorizontalLayoutFactory extends FlowFactory<HorizontalLayout, Horiz
     public HorizontalLayoutFactory compress() {
         component.setPadding(false);
         component.setMargin(false);
+        return this;
+    }
+
+    public HorizontalLayoutFactory center() {
+        component.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        component.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        return this;
+    }
+
+    public HorizontalLayoutFactory center(Component... components) {
+        component.setVerticalComponentAlignment(FlexComponent.Alignment.CENTER, components);
+        return this;
+    }
+
+    public HorizontalLayoutFactory centerVertical() {
+        component.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        return this;
+    }
+
+    public HorizontalLayoutFactory centerHorizontal() {
+        component.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         return this;
     }
 

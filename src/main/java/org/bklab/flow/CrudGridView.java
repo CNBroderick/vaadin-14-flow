@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-01 16:50:54
+ * Modify date：2020-04-02 11:51:53
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -14,6 +14,7 @@ package org.bklab.flow;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -25,8 +26,10 @@ import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.provider.hierarchy.TreeData;
 import com.vaadin.flow.data.provider.hierarchy.TreeDataProvider;
@@ -38,17 +41,25 @@ import dataq.core.operation.JdbcQueryOperation;
 import org.bklab.element.HasAbstractOperation;
 import org.bklab.flow.component.HorizontalPageBar;
 import org.bklab.flow.component.HorizontalRule;
+import org.bklab.flow.dialog.ConfirmedDialog;
 import org.bklab.flow.dialog.ExceptionDialog;
 import org.bklab.flow.factory.*;
+import org.bklab.flow.function.*;
 import org.bklab.flow.menu.GridMenuBuilder;
 import org.bklab.flow.menu.IGridMenuManager;
 import org.bklab.flow.tools.MobileBrowserPredicate;
+import org.bklab.util.DigitalFormatter;
 import org.bklab.util.PagingList;
 import org.bklab.util.UrlParameterParser;
 import org.bklab.util.search.common.KeyWordSearcher;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -603,16 +614,15 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         return this;
     }
 
-    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, Function<T, String> valueProvider) {
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, ToStringFunction<T> valueProvider) {
         return addColumnFilter(columnKey, columnName, valueProvider, (s, t) -> s == null
                 || valueProvider.apply(s).equals(valueProvider.apply(t)));
     }
 
-
     public CrudGridView<T> addColumnFilter(String columnKey, String columnName, Function<T, String> valueProvider, BiPredicate<T, T> predicate) {
         Grid.Column<T> column = grid.getColumnByKey(columnKey);
         if (column == null) return this;
-        ComboBox<T> comboBox = new ComboBoxFactory<T>().lumoSmall().widthFull().placeholder("商品名称")
+        ComboBox<T> comboBox = new ComboBoxFactory<T>().lumoSmall().widthFull().placeholder(columnName)
                 .itemLabelGenerator(valueProvider::apply)
                 .allowCustomValue(true).clearButtonVisible(true).valueChangeListener(e -> {
                     if (e.isFromClient()) {
@@ -621,7 +631,12 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
                             if (c == e.getSource()) continue;
                             ItemLabelGenerator<T> generator = c.getItemLabelGenerator();
                             T value = c.getValue();
-                            c.setItems(list.stream().collect(Collectors.toMap(generator, Function.identity(), (a, b) -> b)).values());
+                            c.setItems(list.stream()
+                                    .filter(a -> a != null && valueProvider.apply(a) != null)
+                                    .sorted(Comparator.comparing(valueProvider))
+                                    .collect(Collectors.toMap(generator, Function.identity(), (a, b) -> b))
+                                    .values()
+                            );
                             c.setValue(value);
                         }
                         if (e.getValue() == null) {
@@ -630,12 +645,172 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
                     }
                 }).get();
         reloadedListeners.add(objects ->
-                comboBox.setItems(objects.stream().collect(Collectors.toMap(valueProvider, Function.identity(), (a, b) -> b)).values())
+                comboBox.setItems(objects.stream()
+                        .filter(a -> a != null && valueProvider.apply(a) != null)
+                        .sorted(Comparator.comparing(valueProvider)).collect(Collectors.toMap(valueProvider, Function.identity(), (a, b) -> b)).values())
         );
         column.setHeader(comboBox);
         columnFilterPredicateMap.put(columnKey, t -> comboBox.getValue() == null || predicate.test(comboBox.getValue(), t));
         columnFilterComponentMap.put(columnKey, comboBox);
         return this;
+    }
+
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, ToNumberFunction<T> valueProvider) {
+        return addColumnFilter(columnKey, columnName, valueProvider, 0);
+    }
+
+    /**
+     * @param columnKey     gird column key
+     * @param columnName    default name when null
+     * @param valueProvider Function<T, Number>
+     * @param step          Accuracy to 100 10 0 0.1 0.01 0.001 ...
+     * @return this object
+     */
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, ToNumberFunction<T> valueProvider, double step) {
+        Grid.Column<T> column = grid.getColumnByKey(columnKey);
+        if (column == null) return this;
+        NumberField min = new NumberFieldFactory().step(step).lumoSmall().setClearButtonVisible(true).setLabel("最小值").get();
+        NumberField max = new NumberFieldFactory().step(step).lumoSmall().setClearButtonVisible(true).setLabel("最大值").get();
+
+        buildColumnFilterDialog(columnKey, columnName, header -> {
+            Double a = min.getValue();
+            Double b = max.getValue();
+            if (a == null && b != null) header.setText("最大：" + new DigitalFormatter(b).toFormatted());
+            else if (a != null && b == null) header.setText("最小：" + new DigitalFormatter(a).toFormatted());
+            else if (a != null)
+                header.setText(new DigitalFormatter(a).toFormatted() + "-" + new DigitalFormatter(b).toFormatted());
+            else header.setText(columnName);
+        }, new EmptyConsumer<>(), min, max);
+
+        columnFilterPredicateMap.put(columnName, t -> {
+            double v = valueProvider.apply(t).doubleValue();
+            if (min.getValue() != null && min.getValue() > v) return false;
+            return max.getValue() == null || !(max.getValue() < v);
+        });
+        return this;
+    }
+
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, ToLocalDateTimeFunction<T> valueProvider) {
+        Grid.Column<T> column = grid.getColumnByKey(columnKey);
+        if (column == null) return this;
+        DatePicker minDate = new DatePickerFactory().placeholder("开始日期").lumoSmall().get();
+        DatePicker maxDate = new DatePickerFactory().placeholder("截止日期").lumoSmall().get();
+        TimePicker minTime = new TimePickerFactory().placeholder("开始时间").lumoSmall().get();
+        TimePicker maxTime = new TimePickerFactory().placeholder("截止时间").lumoSmall().get();
+
+        LinkedHashMap<Component, String> map = new LinkedHashMap<>();
+        map.put(new HorizontalLayoutFactory(minDate, minTime).compress().get(), "开始时间：");
+        map.put(new HorizontalLayoutFactory(minDate, minTime).compress().get(), "结束时间：");
+
+        buildColumnFilterDialog(columnKey, columnName, button -> {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+            LocalDate sd = minDate.getValue();
+            LocalDate ed = maxDate.getValue();
+            LocalTime st = minTime.getValue();
+            LocalTime et = maxTime.getValue();
+
+            String a = sd == null ? "" : df.format(sd);
+            String b = st == null ? "" : tf.format(st);
+            String c = ed == null ? "" : df.format(ed);
+            String d = et == null ? "" : tf.format(et);
+            String s = (a + " " + b + "至" + c + " " + d).trim();
+            if (s.trim().equals("至")) {
+                button.setText(columnName);
+                return;
+            }
+            if (s.endsWith("至")) s = ('从' + s.replace('至', ' ').trim());
+            button.setText(s);
+        }, new EmptyConsumer<>(), map);
+
+        columnFilterPredicateMap.put(columnName, t -> {
+            LocalDateTime v = valueProvider.apply(t);
+            LocalDate sd = minDate.getValue();
+            LocalDate ed = maxDate.getValue();
+            LocalTime st = minTime.getValue();
+            LocalTime et = maxTime.getValue();
+
+            if (sd != null && st != null && LocalDateTime.of(sd, st).isAfter(v)) return false;
+            if (ed != null && et != null && LocalDateTime.of(ed, et).isBefore(v)) return false;
+
+            if (sd != null && st == null && LocalDateTime.of(sd, LocalTime.MIN).isAfter(v)) return false;
+            if (ed != null && et == null && LocalDateTime.of(ed, LocalTime.MAX).isBefore(v)) return false;
+
+            if (sd == null && ed == null && st != null && st.isAfter(v.toLocalTime())) return false;
+            return sd != null || ed != null || et == null || !et.isBefore(v.toLocalTime());
+        });
+        return this;
+    }
+
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, ToLocalDateFunction<T> valueProvider) {
+        Grid.Column<T> column = grid.getColumnByKey(columnKey);
+        if (column == null) return this;
+        DatePicker minDate = new DatePickerFactory().label("开始日期：").widthFull().lumoSmall().get();
+        DatePicker maxDate = new DatePickerFactory().label("截止日期：").widthFull().lumoSmall().get();
+        buildColumnFilterDialog(columnKey, columnName, button ->
+                button.setText(parseTimeSummaryText(minDate.getValue(), maxDate.getValue(), DateTimeFormatter.ofPattern("yyyy-MM-dd"), columnName)), new EmptyConsumer<>(), minDate, maxDate);
+        columnFilterPredicateMap.put(columnName, t -> {
+            LocalDate v = valueProvider.apply(t);
+            if (minDate.getValue() != null && minDate.getValue().isAfter(v)) return false;
+            return maxDate.getValue() == null || !maxDate.getValue().isBefore(v);
+        });
+        return this;
+    }
+
+    public CrudGridView<T> addColumnFilter(String columnKey, String columnName, ToLocalTimeFunction<T> valueProvider) {
+        Grid.Column<T> column = grid.getColumnByKey(columnKey);
+        if (column == null) return this;
+        TimePicker minTime = new TimePickerFactory().label("开始时间：").lumoSmall().get();
+        TimePicker maxTime = new TimePickerFactory().label("截止时间：").lumoSmall().get();
+        buildColumnFilterDialog(columnKey, columnName, button ->
+                button.setText(parseTimeSummaryText(minTime.getValue(), maxTime.getValue(), DateTimeFormatter.ofPattern("HH:mm:ss"), columnName)), new EmptyConsumer<>(), minTime, maxTime);
+
+        columnFilterPredicateMap.put(columnName, t -> {
+            LocalTime v = valueProvider.apply(t);
+            if (minTime.getValue() != null && minTime.getValue().isAfter(v)) return false;
+            return maxTime.getValue() == null || !maxTime.getValue().isBefore(v);
+        });
+
+        return this;
+    }
+
+    public ConfirmedDialog buildColumnFilterDialog(String columnKey, String columnName, Consumer<Button> headerConsumer, Consumer<List<T>> entitiesConsumer, Component... components) {
+        return buildColumnFilterDialog(columnKey, columnName, headerConsumer, entitiesConsumer, new FormLayout(components));
+    }
+
+    public ConfirmedDialog buildColumnFilterDialog(String columnKey, String columnName, Consumer<Button> headerConsumer, Consumer<List<T>> entitiesConsumer, Map<Component, String> componentMap) {
+        FormLayout form = new FormLayout();
+        componentMap.forEach(form::addFormItem);
+        return buildColumnFilterDialog(columnKey, columnName, headerConsumer, entitiesConsumer, form);
+    }
+
+    public ConfirmedDialog buildColumnFilterDialog(String columnKey, String columnName, Consumer<Button> headerConsumer, Consumer<List<T>> entitiesConsumer, FormLayout form) {
+        Button confirm = new ButtonFactory().widthFull().lumoSmall().text("确定").icon(VaadinIcon.CHECK_CIRCLE_O).get();
+        form.setWidthFull();
+        ButtonFactory buttonFactory = new ButtonFactory().text(columnName).icon(VaadinIcon.FILTER).widthFull().lumoSmall();
+        ConfirmedDialog dialog = new ConfirmedDialog().title("筛选" + columnName).setContent(form).addToolBarRight(confirm)
+                .withMinSize("20em", null).withMaxSize("90vw", null)
+                .hasSaveButton(e -> {
+                    if (entitiesConsumer != null) entitiesConsumer.accept(doLocalQuery());
+                    if (headerConsumer != null) headerConsumer.accept(buttonFactory.get());
+                }).hasCloseButton();
+        Grid.Column<T> column = grid.getColumnByKey(columnKey);
+        if (column != null) column.setHeader(buttonFactory.clickListener(e -> dialog.open()).get());
+        return dialog;
+    }
+
+    private String parseTimeSummaryText(TemporalAccessor a, TemporalAccessor b, DateTimeFormatter f, String defaultName) {
+        String t;
+        if (a == null && b == null) {
+            t = defaultName;
+        } else if (a == null) {
+            t = "至" + f.format(b);
+        } else if (b == null) {
+            t = "从" + f.format(a);
+        } else {
+            t = f.format(a) + "-" + f.format(b);
+        }
+        return t;
     }
 
     public CrudGridView<T> removeColumnFilter(String columnKey, String columnName) {
@@ -645,5 +820,6 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         column.setHeader(columnName);
         return this;
     }
+
 
 }

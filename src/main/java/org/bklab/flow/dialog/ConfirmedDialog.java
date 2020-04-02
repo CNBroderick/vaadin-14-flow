@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.flow.dialog.ConfirmedDialog
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-02 11:52:13
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.flow.dialog.ConfirmedDialog
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -95,7 +100,9 @@ public class ConfirmedDialog extends Dialog {
     @SafeVarargs
     public final ConfirmedDialog hasSaveButton(ComponentEventListener<ClickEvent<Button>>... listeners) {
         footerBar.add(new ButtonFactory().icon(VaadinIcon.CHECK_CIRCLE_O.create()).text("保存").minWidth("100px")
-                .clickListener(listeners).clickListener(e -> close()).lumoSmall().lumoPrimary().get());
+                .clickListener(listeners).clickListener(e -> {
+                    if (isOpened()) close();
+                }).lumoSmall().lumoPrimary().get());
         return this;
     }
 
@@ -146,6 +153,19 @@ public class ConfirmedDialog extends Dialog {
     public final ConfirmedDialog hasCloseButton(ComponentEventListener<ClickEvent<Button>>... listeners) {
         footerBar.add(new ButtonFactory().icon(VaadinIcon.CLOSE_CIRCLE_O.create()).text("关闭").lumoPrimary().minWidth("100px")
                 .clickListener(listeners).clickListener(e -> close()).lumoSmall().get());
+        return this;
+    }
+
+    @SafeVarargs
+    public final ConfirmedDialog hasCloseButtonOnTopRight(ComponentEventListener<ClickEvent<Button>>... listeners) {
+        topBarRight.add(new ButtonFactory().icon(VaadinIcon.CLOSE_CIRCLE_O.create()).text("关闭").lumoPrimary().minWidth("100px")
+                .clickListener(listeners).clickListener(e -> close()).lumoSmall().get());
+        return this;
+    }
+
+    public final ConfirmedDialog hasCloseButtonOnTopRight() {
+        topBarRight.add(new ButtonFactory().icon(VaadinIcon.CLOSE_CIRCLE_O.create()).text("关闭").lumoPrimary().minWidth("100px")
+                .clickListener(e -> close()).lumoSmall().get());
         return this;
     }
 

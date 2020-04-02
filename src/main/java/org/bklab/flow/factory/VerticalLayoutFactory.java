@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 09:46:21
+ * Modify date：2020-04-02 09:50:36
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.VerticalLayoutFactory
@@ -34,6 +34,27 @@ public class VerticalLayoutFactory extends FlowFactory<VerticalLayout, VerticalL
 
     public VerticalLayoutFactory(Component... components) {
         super(new VerticalLayout(components));
+    }
+
+    public VerticalLayoutFactory center() {
+        component.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        component.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        return this;
+    }
+
+    public VerticalLayoutFactory center(Component... components) {
+        component.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, components);
+        return this;
+    }
+
+    public VerticalLayoutFactory centerVertical() {
+        component.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        return this;
+    }
+
+    public VerticalLayoutFactory centerHorizontal() {
+        component.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        return this;
     }
 
     public VerticalLayoutFactory compress() {
