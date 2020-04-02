@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-30 09:36:21
+ * Modify date：2020-04-02 13:19:56
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.ButtonFactory
@@ -44,6 +44,16 @@ public class ButtonFactory extends FlowFactory<Button, ButtonFactory> {
 
     public ButtonFactory clickListener(ComponentEventListener<ClickEvent<Button>> listener) {
         if (listener != null) component.addClickListener(listener);
+        return this;
+    }
+
+    public ButtonFactory title(String title) {
+        component.getElement().setAttribute("title", title);
+        return this;
+    }
+
+    public ButtonFactory title() {
+        component.getElement().setAttribute("title", component.getText());
         return this;
     }
 

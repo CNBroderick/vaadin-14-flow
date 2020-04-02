@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-01 11:58:29
+ * Modify date：2020-04-02 16:52:34
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.TmbView
@@ -42,6 +42,8 @@ public class TmbView<T extends TmbView<T>> extends VerticalLayout {
         toolBar.expand(toolBarMiddle);
         toolBar.setWidthFull();
         toolBarMiddle.setMaxWidth("100%");
+
+        title.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 
         toolBar.setMargin(false);
         toolBarLeft.setMargin(false);
@@ -99,7 +101,7 @@ public class TmbView<T extends TmbView<T>> extends VerticalLayout {
     public T title(String text) {
         title.removeAll();
         H3 h3 = new H3(text);
-        h3.getStyle().set("margin-top", "0px");
+        h3.getStyle().set("margin-top", "5px").set("margin-bottom", "5px");
         title.add(h3);
         return (T) this;
     }
@@ -107,7 +109,7 @@ public class TmbView<T extends TmbView<T>> extends VerticalLayout {
     public T h4title(String text) {
         title.removeAll();
         H4 h4 = new H4(text);
-        h4.getStyle().set("margin-top", "0px");
+        h4.getStyle().set("margin-top", "5px").set("margin-bottom", "5px");
         title.add(h4);
         return (T) this;
     }
@@ -115,7 +117,7 @@ public class TmbView<T extends TmbView<T>> extends VerticalLayout {
     public T h5title(String text) {
         title.removeAll();
         H5 h5 = new H5(text);
-        h5.getStyle().set("margin-top", "0px");
+        h5.getStyle().set("margin-top", "5px").set("margin-bottom", "5px");
         title.add(h5);
         return (T) this;
     }
