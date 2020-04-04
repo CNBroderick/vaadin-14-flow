@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 10:47:02
+ * Modify date：2020-04-03 12:39:16
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.common.data.CsvRecordDataFunction
@@ -15,7 +15,6 @@ import dataq.core.data.schema.Record;
 import dataq.core.data.schema.Schema;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.bklab.common.ssh2.SchemaFieldFactory;
 
 import java.io.BufferedReader;
 import java.io.File;

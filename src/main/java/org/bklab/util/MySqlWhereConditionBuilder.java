@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-02 15:44:51
+ * Modify date：2020-04-04 09:25:54
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.util.MySqlWhereConditionBuilder
@@ -203,5 +203,9 @@ public class MySqlWhereConditionBuilder implements Supplier<String> {
         return b.toString();
     }
 
+    @Override
+    public String toString() {
+        return b.toString();
+    }
 
 }

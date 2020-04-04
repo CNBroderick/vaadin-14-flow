@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.common.action.Ssh2ActionManager
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-03 12:39:16
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.common.action.Ssh2ActionManager
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -8,7 +13,7 @@ package org.bklab.common.action;
 
 import dataq.core.data.schema.Schema;
 import org.bklab.common.action.parser.NetStatParser;
-import org.bklab.common.ssh2.SchemaFieldFactory;
+import org.bklab.common.data.SchemaFieldFactory;
 
 import java.util.Arrays;
 import java.util.List;

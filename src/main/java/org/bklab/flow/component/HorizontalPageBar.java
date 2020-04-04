@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-30 16:00:52
+ * Modify date：2020-04-04 09:25:54
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.component.HorizontalPageBar
@@ -12,7 +12,6 @@
 package org.bklab.flow.component;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H6;
@@ -37,7 +36,6 @@ import java.util.stream.Stream;
 
 public class HorizontalPageBar<T> extends HorizontalLayout {
 
-    private final Text totalText = new Text("");
     private final Button firstButton = createButton(VaadinIcon.FAST_BACKWARD.create(), "第一页");
     private final Button beforeButton = createButton(VaadinIcon.STEP_BACKWARD.create(), "前一页");
     private final Button nextButton = createButton(VaadinIcon.STEP_FORWARD.create(), "下一页");
@@ -45,7 +43,7 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
     private final PagingList<T> pagingList;
     private final List<Consumer<List<T>>> dataConsumers = new ArrayList<>();
     private final List<Registration> registrations = new ArrayList<>();
-    private int onePageSize = 15;
+    private int onePageSize;
     private final Select<Integer> onePageSizeBox = createOnePageSizeBox();
     private Function<Integer, String> totalDataSizeFormatter = i -> "共" + i + "条数据";
     private Boolean minimal = Boolean.FALSE;
@@ -76,6 +74,7 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
         HorizontalLayout middle = new HorizontalLayout();
         middle.setMaxWidth("100%");
         H6 totalText = new H6(totalDataSizeFormatter.apply(pagingList.dataLength()));
+        totalText.getStyle().set("margin-top", "0px");
 
         current = new NumberField();
         current.setMinWidth("60px");
@@ -86,12 +85,14 @@ public class HorizontalPageBar<T> extends HorizontalLayout {
         current.setValue(1d);
 
         final H6 totalPageNumber = new H6("共 " + new DigitalFormatter(pagingList.length()) + " 页");
-
+        totalPageNumber.getStyle().set("margin-top", "0px");
         bindButtonAction(current, totalPageNumber);
 
 
         H6 onePageSizeBoxPrefix = new H6("每页");
         H6 onePageSizeBoxSuffix = new H6("条数据");
+        onePageSizeBoxPrefix.getStyle().set("margin-top", "0px");
+        onePageSizeBoxSuffix.getStyle().set("margin-top", "0px");
         HorizontalLayout right = new HorizontalLayout();
         right.setMinWidth("200px");
         right.setDefaultVerticalComponentAlignment(Alignment.CENTER);

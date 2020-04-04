@@ -1,10 +1,15 @@
 /*
- * Class: org.bklab.common.ssh2.SchemaFieldFactory
- * Modify date: 2020/3/20 上午10:58
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-03 12:39:16
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.common.data.SchemaFieldFactory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
-package org.bklab.common.ssh2;
+package org.bklab.common.data;
 
 import dataq.core.data.schema.DataType;
 import dataq.core.data.schema.Field;

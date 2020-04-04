@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-02 13:19:56
+ * Modify date：2020-04-04 09:25:55
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -21,13 +21,11 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.component.treegrid.TreeGrid;
@@ -40,9 +38,8 @@ import dataq.core.operation.AbstractOperation;
 import dataq.core.operation.JdbcQueryOperation;
 import org.bklab.element.HasAbstractOperation;
 import org.bklab.flow.component.HorizontalPageBar;
-import org.bklab.flow.component.HorizontalRule;
 import org.bklab.flow.dialog.ConfirmedDialog;
-import org.bklab.flow.dialog.ExceptionDialog;
+import org.bklab.flow.dialog.ErrorDialog;
 import org.bklab.flow.factory.*;
 import org.bklab.flow.function.*;
 import org.bklab.flow.menu.GridMenuBuilder;
@@ -53,14 +50,13 @@ import org.bklab.util.PagingList;
 import org.bklab.util.UrlParameterParser;
 import org.bklab.util.search.common.KeyWordSearcher;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -83,6 +79,7 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     private final Button search = new ButtonFactory().text("查询").icon(VaadinIcon.SEARCH.create())
             .minWidth100px().clickListener(e -> doQuery()).lumoSmall().get();
     private Boolean mobileMode = false;
+    private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
 
     private final List<BiConsumer<CrudGridView<T>, List<T>>> afterQueryConsumers = new ArrayList<>();
 
@@ -103,7 +100,9 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     private BiPredicate<T, T> defaultSameEntityBiPredicate = Objects::equals;
     private final Map<String, Predicate<T>> columnFilterPredicateMap = new HashMap<>();
     private final Map<String, ComboBox<T>> columnFilterComponentMap = new HashMap<>();
+    private final List<Supplier<String>> beforeQueryInterceptors = new ArrayList<>();
 
+    private boolean noPageBar = false;
 
     {
         addToolBarRight(keyword, search);
@@ -124,6 +123,20 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
 
     public CrudGridView<T> peek(Consumer<CrudGridView<T>> crudGridViewConsumer) {
         crudGridViewConsumer.accept(this);
+        return this;
+    }
+
+    public CrudGridView<T> noPageBar() {
+        this.noPageBar = true;
+        pageBar.setOnePageSize(Integer.MAX_VALUE).build();
+        getFooterBarMiddle().remove(pageBar);
+        return this;
+    }
+
+    public CrudGridView<T> hasPageBar() {
+        this.noPageBar = false;
+        pageBar.setOnePageSize(singlePageSize).build();
+        addFooterBarMiddle(pageBar);
         return this;
     }
 
@@ -207,6 +220,14 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         if (params != null) {
             params.forEach(queryOperation::setParam);
         }
+
+        AtomicInteger i = new AtomicInteger(0);
+        List<String> messages = beforeQueryInterceptors.stream().map(Supplier::get).filter(Objects::nonNull).collect(Collectors.toList());
+        if (!messages.isEmpty()) {
+            new ErrorDialog(String.join("\n" + i.incrementAndGet() + ".\t", messages)).create().open();
+            return this;
+        }
+
         queryOperation.execute().ifSuccess(s -> {
             entities = s.asList();
             Stream<T> stream = entities.stream();
@@ -241,8 +262,12 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     }
 
     public void doRefreshAfterFinishedQuery(List<T> entities) {
-        this.pagingList.update(entities, singlePageSize);
-        this.pageBar.setOnePageSize(singlePageSize).setTotalDataSizeFormatter(totalDataSizeFormatter).build();
+        if (noPageBar) {
+            grid.setItems(entities);
+        } else {
+            this.pagingList.update(entities, singlePageSize);
+            this.pageBar.setOnePageSize(singlePageSize).setTotalDataSizeFormatter(totalDataSizeFormatter).build();
+        }
         this.reloadedListeners.forEach(a -> a.accept(entities));
         this.afterQueryConsumers.forEach(a -> a.accept(this, entities));
     }
@@ -292,34 +317,16 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
     }
 
     private void handleException(Exception exception) {
+        ErrorDialog dialog;
         if (exception instanceof java.net.ConnectException) {
-            new ExceptionDialog(exception).setTitle("网络连接异常").open();
+            dialog = new ErrorDialog("网络连接异常").throwable(exception).create();
+        } else if (exception instanceof com.mysql.cj.jdbc.exceptions.CommunicationsException) {
+            dialog = new ErrorDialog("数据库连接异常").throwable(exception).create();
+        } else {
+            dialog = new ErrorDialog(exception).create();
         }
-        if (exception instanceof com.mysql.cj.jdbc.exceptions.CommunicationsException) {
-            new ExceptionDialog(exception).setTitle("数据库连接异常").open();
-        }
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.getStyle().set("color", "red");
-
-        HorizontalLayout toolbar = new HorizontalLayout();
-        H4 title = new H4("发生错误");
-        Button back = new Button("返回", VaadinIcon.ARROW_BACKWARD.create());
-        back.addClickListener(e -> setContent(grid));
-        toolbar.setAlignSelf(Alignment.START, title);
-        toolbar.setAlignSelf(Alignment.END, back);
-
-        toolbar.add(toolbar);
-
-        layout.add(new HorizontalRule());
-
-        layout.add(new H5(exception.getLocalizedMessage()));
-
-        StringWriter messageWriter = new StringWriter();
-        exception.printStackTrace(new PrintWriter(messageWriter));
-        layout.add(new TextArea(messageWriter.toString()));
-
-        setContent(layout);
+        setContent(new VerticalLayoutFactory(dialog.getContent()).sizeFull().center().get());
+        exceptionConsumers.forEach(e -> e.accept(exception));
     }
 
     public CrudGridView<T> buildMenuFromManager() {
@@ -419,6 +426,19 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         for (Component c : components) {
             t.addComponentAtIndex(Math.max(0, t.getChildren().collect(Collectors.toList()).indexOf(search) - 1), c);
         }
+        return this;
+    }
+
+    public CrudGridView<T> addToolBarRightBeforeKeyword(String labelName, Component component) {
+        H6 h6 = new H6(labelName);
+        h6.getStyle().set("margin-top", "0px");
+        return addToolBarRightBeforeKeyword(new HorizontalLayoutFactory(h6, component).compress().center().get());
+    }
+
+    public CrudGridView<T> addToolBarRightFirst(String labelName, Component component) {
+        H6 h6 = new H6(labelName);
+        h6.getStyle().set("margin-top", "0px");
+        getToolBarRight().addComponentAtIndex(0, new HorizontalLayoutFactory(h6, component).compress().center().get());
         return this;
     }
 
@@ -822,5 +842,23 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         return this;
     }
 
+    public CrudGridView<T> addExceptionConsumer(Consumer<Exception> exceptionConsumer) {
+        this.exceptionConsumers.add(exceptionConsumer);
+        return this;
+    }
 
+    public CrudGridView<T> removeExceptionConsumer(Consumer<Exception> exceptionConsumer) {
+        this.exceptionConsumers.remove(exceptionConsumer);
+        return this;
+    }
+
+    public CrudGridView<T> clearExceptionConsumers() {
+        this.exceptionConsumers.clear();
+        return this;
+    }
+
+    public CrudGridView<T> addBeforeQueryInterceptor(Supplier<String> interceptor) {
+        this.beforeQueryInterceptors.add(interceptor);
+        return this;
+    }
 }
