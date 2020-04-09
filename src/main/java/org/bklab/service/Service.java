@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 16:58:30
+ * Modify date：2020-04-08 12:52:56
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.service.Service
@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-@SuppressWarnings("unchecked")
 public class Service<T extends Service<T>> {
     private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
     private final List<Consumer<OperationResult>> successConsumers = new ArrayList<>();

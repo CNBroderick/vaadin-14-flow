@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-02 16:52:34
+ * Modify date：2020-04-07 10:09:29
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.TmbView
@@ -61,6 +61,7 @@ public class TmbView<T extends TmbView<T>> extends VerticalLayout {
         footerBarRight.setMargin(false);
         footerBar.setMargin(false);
         footerBar.getStyle().set("margin-top", "0");
+        footerBar.getStyle().set("bottom", "0");
 
         toolBarLeft.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         toolBarMiddle.setDefaultVerticalComponentAlignment(Alignment.CENTER);

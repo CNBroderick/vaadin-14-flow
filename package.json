@@ -8,7 +8,8 @@
     "minimist": ">=1.2.2",
     "chart.js": "^2.9.3",
     "moment": "^2.24.0",
-    "@polymer/paper-slider": "^3.0.1"
+    "@polymer/paper-slider": "^3.0.1",
+    "core-js": ">=3.6.4"
   },
   "devDependencies": {
     "compression-webpack-plugin": "3.0.1",
@@ -19,7 +20,8 @@
     "webpack-babel-multi-target-plugin": "2.3.3",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0",
-    "webpack-merge": "4.2.2"
+    "webpack-merge": "4.2.2",
+    "core-js": ">=3.6.4"
   },
-  "vaadinAppPackageHash": "47acaed975fcae6b5abdd69ace000ec7ced2fc464d055eb03e548699f31d7bac"
+  "vaadinAppPackageHash": "f20cc38ded47cb2c5c5beb6845428a988d6fa6504b341000a8865e800b726998"
 }

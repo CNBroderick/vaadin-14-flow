@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-30 15:01:07
+ * Modify date：2020-04-07 09:04:54
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.DatePickerFactory
@@ -27,7 +27,7 @@ public class DatePickerFactory extends FlowFactory<DatePicker, DatePickerFactory
     }
 
     public DatePickerFactory() {
-        this(new DatePicker(null, Locale.SIMPLIFIED_CHINESE));
+        this(new DatePicker(null, Locale.CHINA));
     }
 
     public DatePickerFactory value(LocalDate value) {
