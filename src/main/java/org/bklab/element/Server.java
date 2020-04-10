@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.element.Server
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-10 14:39:35
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.element.Server
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -85,7 +90,7 @@ public class Server implements HasLabels<Server> {
     @SafeVarargs
     public final boolean testConnectSsh(int timeoutMilliseconds, Consumer<Exception>... exceptionConsumers) {
         try {
-            new Ssh2Factory(address, sshPort, identity).addExceptionConsumers(exceptionConsumers)
+            new Ssh2Factory(address, sshPort, identity).addExceptionConsumers(Arrays.asList(exceptionConsumers))
                     .createSession(timeoutMilliseconds).disconnect();
             return true;
         } catch (JSchException e) {

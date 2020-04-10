@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 13:40:59
+ * Modify date：2020-04-10 14:39:35
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.element.HasExceptionConsumer
@@ -43,5 +43,4 @@ public interface HasExceptionConsumer<T extends HasExceptionConsumer<T>> {
         getExceptionConsumers().forEach(exceptionConsumer -> exceptionConsumer.accept(e));
         return (T) this;
     }
-
 }

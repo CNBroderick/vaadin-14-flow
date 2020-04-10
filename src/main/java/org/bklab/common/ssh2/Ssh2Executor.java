@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.common.ssh2.Ssh2Executor
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-10 14:31:54
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.common.ssh2.Ssh2Executor
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -12,13 +17,16 @@ import com.jcraft.jsch.Session;
 import org.bklab.common.action.Action;
 import org.bklab.common.action.ActionExecutor;
 import org.bklab.common.action.ExecutionResult;
-import org.bklab.element.HasExceptionConsumers;
+import org.bklab.element.HasExceptionConsumer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
-public class Ssh2Executor extends HasExceptionConsumers<Ssh2Executor> implements ActionExecutor {
-
+public class Ssh2Executor implements ActionExecutor, HasExceptionConsumer<Ssh2Executor> {
+    private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
     private final Session session;
 
     public Ssh2Executor(Session session) {
@@ -95,5 +103,10 @@ public class Ssh2Executor extends HasExceptionConsumers<Ssh2Executor> implements
 
     public void sessionDisconnected() {
         session.disconnect();
+    }
+
+    @Override
+    public List<Consumer<Exception>> getExceptionConsumers() {
+        return exceptionConsumers;
     }
 }

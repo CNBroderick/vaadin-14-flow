@@ -1,13 +1,18 @@
 /*
- * Class: org.bklab.common.ssh2.SftpTransfer
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-10 14:31:54
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.common.ssh2.SftpTransfer
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
 package org.bklab.common.ssh2;
 
 import com.jcraft.jsch.*;
-import org.bklab.element.HasExceptionConsumers;
+import org.bklab.element.HasExceptionConsumer;
 import org.bklab.service.TemporaryFileService;
 
 import java.io.*;
@@ -15,8 +20,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class SftpTransfer extends HasExceptionConsumers<SftpTransfer> {
-
+public class SftpTransfer implements HasExceptionConsumer<SftpTransfer> {
+    private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
     private final Session session;
     public String currentPath;
     public char separator;
@@ -183,6 +188,11 @@ public class SftpTransfer extends HasExceptionConsumers<SftpTransfer> {
 
     public Session getSession() {
         return session;
+    }
+
+    @Override
+    public List<Consumer<Exception>> getExceptionConsumers() {
+        return exceptionConsumers;
     }
 
     private static class ChanelSftpLsEntrySelector implements ChannelSftp.LsEntrySelector {

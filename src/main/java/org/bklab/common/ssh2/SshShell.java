@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.common.ssh2.SshShell
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-10 14:31:54
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.common.ssh2.SshShell
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -9,13 +14,18 @@ package org.bklab.common.ssh2;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import org.bklab.element.HasExceptionConsumers;
+import org.bklab.element.HasExceptionConsumer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
-public class SshShell extends HasExceptionConsumers<SshShell> {
+public class SshShell implements HasExceptionConsumer<SshShell> {
+
+    private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
     private final Session session;
     private final ByteArrayInputStream in = new ByteArrayInputStream(new byte[]{});
     private ChannelShell shell;
@@ -51,4 +61,8 @@ public class SshShell extends HasExceptionConsumers<SshShell> {
 
     }
 
+    @Override
+    public List<Consumer<Exception>> getExceptionConsumers() {
+        return exceptionConsumers;
+    }
 }

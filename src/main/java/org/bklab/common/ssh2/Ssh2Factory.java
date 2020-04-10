@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.common.ssh2.Ssh2Factory
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-10 14:31:54
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.common.ssh2.Ssh2Factory
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -9,22 +14,23 @@ package org.bklab.common.ssh2;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import org.bklab.element.HasExceptionConsumers;
+import org.bklab.element.HasExceptionConsumer;
 import org.bklab.element.Identity;
 import org.bklab.element.Server;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class Ssh2Factory extends HasExceptionConsumers<Ssh2Factory> {
-
+public class Ssh2Factory implements HasExceptionConsumer<Ssh2Factory> {
+    private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
     private final String address;
     private final int port;
     private final Identity identity;
     private final Properties config = new Properties();
-    private Consumer<JSchException> exceptionConsumer = Throwable::printStackTrace;
 
     {
         config.put("StrictHostKeyChecking", "no");
@@ -107,8 +113,8 @@ public class Ssh2Factory extends HasExceptionConsumers<Ssh2Factory> {
         return this;
     }
 
-    public Ssh2Factory exceptionConsumer(Consumer<JSchException> exceptionConsumer) {
-        this.exceptionConsumer = exceptionConsumer;
-        return this;
+    @Override
+    public List<Consumer<Exception>> getExceptionConsumers() {
+        return exceptionConsumers;
     }
 }
