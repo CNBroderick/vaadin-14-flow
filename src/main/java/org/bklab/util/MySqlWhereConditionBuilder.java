@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-04 09:25:54
+ * Modify date：2020-04-10 10:41:58
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.util.MySqlWhereConditionBuilder
@@ -109,10 +109,8 @@ public class MySqlWhereConditionBuilder implements Supplier<String> {
         if (object instanceof Collection) consumer.accept((Collection<?>) object);
         if (parameterName.length() == 1) return;
 
-        if (parameterName.endsWith("y")) {
-            Object o = context.getObject(InflectWord.getInstance().pluralize(parameterName));
+        Object o = context.getObject(InflectWord.getInstance().pluralize(parameterName));
             if (o instanceof Collection<?>) consumer.accept((Collection<?>) o);
-        }
 
     }
 
