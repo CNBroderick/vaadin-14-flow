@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-04 09:25:55
+ * Modify date：2020-04-13 12:02:29
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.CrudGridView
@@ -481,7 +481,7 @@ public class CrudGridView<T> extends TmbView<CrudGridView<T>> {
         return this;
     }
 
-    private ComboBox<GridVariant> createThemeSwitchBox() {
+    public ComboBox<GridVariant> createThemeSwitchBox() {
         return new ComboBoxFactory<GridVariant>()
                 .lumoSmall()
                 .placeholder("默认表格样式")

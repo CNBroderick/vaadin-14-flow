@@ -16,12 +16,13 @@
     "copy-webpack-plugin": "5.1.0",
     "minimist": ">=1.2.2",
     "raw-loader": "3.0.0",
-    "webpack": "4.30.0",
+    "webpack": "4.42.0",
     "webpack-babel-multi-target-plugin": "2.3.3",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0",
     "webpack-merge": "4.2.2",
-    "core-js": ">=3.6.4"
+    "core-js": ">=3.6.4",
+    "terser": "4.6.7"
   },
-  "vaadinAppPackageHash": "f20cc38ded47cb2c5c5beb6845428a988d6fa6504b341000a8865e800b726998"
+  "vaadinAppPackageHash": "77c5f4834d450ea7c95849faf88103d99dc78888150237e1ca39f735758dcdba"
 }

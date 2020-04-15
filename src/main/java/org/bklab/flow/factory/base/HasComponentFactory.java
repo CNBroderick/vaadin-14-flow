@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-23 10:32:43
+ * Modify date：2020-04-10 16:39:52
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.base.HasComponentFactory
@@ -14,7 +14,6 @@ package org.bklab.flow.factory.base;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 
-@SuppressWarnings("unchecked")
 public interface HasComponentFactory<E extends HasComponentFactory<E, T>, T extends Component & HasComponents> extends IComponentFactory<T> {
     default E add(Component... components) {
         get().add(components);

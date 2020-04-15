@@ -2,14 +2,14 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-02 15:42:29
+ * Modify date：2020-04-15 15:15:31
  * _____________________________
  * Project name: vaadin-14-flow
- * Class name：org.bklab.util.InflectWord
+ * Class name：org.bklab.util.mysql.InflectWord
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
-package org.bklab.util;
+package org.bklab.util.mysql;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -158,28 +158,3 @@ public class InflectWord {
     }
 }
 
-class RuleAndReplacement {
-    private String rule;
-    private String replacement;
-
-    public RuleAndReplacement(String rule, String replacement) {
-        this.rule = rule;
-        this.replacement = replacement;
-    }
-
-    public String getReplacement() {
-        return replacement;
-    }
-
-    public void setReplacement(String replacement) {
-        this.replacement = replacement;
-    }
-
-    public String getRule() {
-        return rule;
-    }
-
-    public void setRule(String rule) {
-        this.rule = rule;
-    }
-}

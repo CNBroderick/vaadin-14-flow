@@ -2,14 +2,14 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-10 10:41:58
+ * Modify date：2020-04-15 15:15:31
  * _____________________________
  * Project name: vaadin-14-flow
- * Class name：org.bklab.util.MySqlWhereConditionBuilder
+ * Class name：org.bklab.util.mysql.MySqlWhereConditionBuilder
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
-package org.bklab.util;
+package org.bklab.util.mysql;
 
 import dataq.core.operation.OperationContext;
 
@@ -19,10 +19,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -198,12 +195,15 @@ public class MySqlWhereConditionBuilder implements Supplier<String> {
 
     @Override
     public String get() {
-        return b.toString();
+        return Objects.toString(b.toString(), "")
+                .replaceAll("\n", " ")
+                .replaceAll("\t", " ")
+                .replaceAll(" +", " ");
     }
 
     @Override
     public String toString() {
-        return b.toString();
+        return get();
     }
 
 }

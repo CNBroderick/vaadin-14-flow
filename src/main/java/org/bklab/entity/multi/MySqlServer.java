@@ -1,6 +1,11 @@
 /*
- * Class: org.bklab.entity.multi.MySqlServer
- * Modify date: 2020/3/20 下午1:13
+ * Copyright (c) 2008 - 2020. - Broderick Labs.
+ * Author: Broderick Johansson
+ * E-mail: z@bkLab.org
+ * Modify date：2020-04-10 18:21:53
+ * _____________________________
+ * Project name: vaadin-14-flow
+ * Class name：org.bklab.entity.multi.MySqlServer
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
@@ -23,8 +28,8 @@ import java.sql.DriverManager;
 import java.util.*;
 
 public class MySqlServer implements HasLabels<MySqlServer> {
-    public final static String MYSQL_JDBC_Driver = "org.gjt.mm.mysql.Driver";
-    public final static String MYSQL_URL_PARAMETERS = "useSSL=false&useUnicode=yes&characterEncoding=UTF-8";
+    public final static String MYSQL_JDBC_Driver = "com.mysql.cj.jdbc.Driver";
+    public final static String MYSQL_URL_PARAMETERS = "useSSL=false&useUnicode=yes&characterEncoding=UTF-8&character_set_server=UTF-8";
     public final static String MYSQL_INFORMATION_SCHEMA = "INFORMATION_SCHEMA";
     public final static String MYSQL_SHOW_DATABASES = "show databases";
     public final static String MYSQL_CREATE_DATABASE = "create database ";

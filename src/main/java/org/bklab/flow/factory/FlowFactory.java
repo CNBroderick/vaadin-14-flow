@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 15:13:40
+ * Modify date：2020-04-15 12:04:49
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.flow.factory.FlowFactory
@@ -168,6 +168,17 @@ public class FlowFactory<T extends Component, E extends FlowFactory<T, E>> imple
 
     public E addAttachListener(ComponentEventListener<AttachEvent> listener) {
         component.addAttachListener(listener);
+        return (E) this;
+    }
+
+
+    public E attachListener(ComponentEventListener<AttachEvent> listener) {
+        component.addAttachListener(listener);
+        return (E) this;
+    }
+
+    public E detachListener(ComponentEventListener<DetachEvent> listener) {
+        component.addDetachListener(listener);
         return (E) this;
     }
 
