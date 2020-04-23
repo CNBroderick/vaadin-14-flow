@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-15 15:15:31
+ * Modify date：2020-04-20 12:07:17
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.util.mysql.MySqlWhereConditionBuilder
@@ -68,17 +68,6 @@ public class MySqlWhereConditionBuilder implements Supplier<String> {
             b.append(" AND `").append(filedName).append("` = '").append(object).append("'");
         }
 
-        if (Stream.of(
-                LocalDateTime.class,
-                LocalDate.class,
-                LocalTime.class,
-                Date.class,
-                Number.class
-        ).anyMatch(object.getClass()::isInstance)) {
-            accessParameter(filedName, parameterName);
-            return this;
-        }
-
         if (object.getClass().isEnum()) {
             b.append(" AND `").append(filedName).append("` ").append('=').append(" '")
                     .append(((Enum<?>) object).name())
@@ -93,7 +82,18 @@ public class MySqlWhereConditionBuilder implements Supplier<String> {
             return this;
         }
 
-        b.append(" AND `").append(filedName).append("` = '").append(object).append("'");
+        accessParameter(filedName, parameterName);
+
+        if (Stream.of(
+                LocalDateTime.class,
+                LocalDate.class,
+                LocalTime.class,
+                Date.class,
+                Number.class
+        ).noneMatch(object.getClass()::isInstance)) {
+            b.append(" AND `").append(filedName).append("` = '").append(object).append("'");
+        }
+
         return this;
     }
 
