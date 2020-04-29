@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-04-23 10:06:30
+ * Modify date：2020-04-29 19:07:04
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.common.request.Request
@@ -117,9 +117,10 @@ public class Request {
         return (String) parameterMap.get(parameterName);
     }
 
+    @Override
     public String toString() {
         return parameterMap.keySet().stream()
-                .map(k -> k + "=" + parameterMap.get(k) + " ")
-                .collect(Collectors.joining("parameter[", operationName + " ", "]"));
+                .map(k -> k + "=" + parameterMap.get(k))
+                .collect(Collectors.joining(" ", "request parameters[", "]"));
     }
 }

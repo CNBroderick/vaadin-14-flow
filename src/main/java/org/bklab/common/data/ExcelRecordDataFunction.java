@@ -2,7 +2,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  * Author: Broderick Johansson
  * E-mail: z@bkLab.org
- * Modify date：2020-03-27 10:46:00
+ * Modify date：2020-04-29 19:07:04
  * _____________________________
  * Project name: vaadin-14-flow
  * Class name：org.bklab.common.data.ExcelRecordDataFunction
@@ -20,8 +20,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bklab.util.StringExtractor;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -122,8 +124,10 @@ public class ExcelRecordDataFunction implements IRecordDataFunction<ExcelRecordD
                 value = cell.getCellFormula();
                 break;
             default: {
-
-                value = cell.getStringCellValue();
+                String stringCellValue = cell.getStringCellValue();
+                if (stringCellValue.matches("\\d+\\.?\\d+%"))
+                    return new BigDecimal(StringExtractor.getRealNumber(stringCellValue)).multiply(new BigDecimal("0.01")).toString();
+                value = stringCellValue;
             }
         }
         return Optional.ofNullable(value).map(String::strip).orElse(value);
