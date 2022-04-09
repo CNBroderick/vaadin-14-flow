@@ -7,7 +7,7 @@
     "@vaadin/flow-deps": "./target/frontend",
     "minimist": ">=1.2.2",
     "chart.js": "^2.9.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "@polymer/paper-slider": "^3.0.1",
     "core-js": ">=3.6.4"
   },
