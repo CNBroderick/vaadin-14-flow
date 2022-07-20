@@ -22,7 +22,7 @@
     "webpack-dev-server": "3.9.0",
     "webpack-merge": "4.2.2",
     "core-js": ">=3.6.4",
-    "terser": "4.6.7"
+    "terser": "4.8.1"
   },
   "vaadinAppPackageHash": "77c5f4834d450ea7c95849faf88103d99dc78888150237e1ca39f735758dcdba"
 }
